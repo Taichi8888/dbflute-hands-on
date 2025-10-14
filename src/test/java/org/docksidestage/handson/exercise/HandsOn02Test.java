@@ -35,6 +35,8 @@ public class HandsOn02Test extends UnitContainerTestCase{
         // ## Arrange ##
         
         // ## Act ##
+        // TODO hase 戻り値はlongじゃなくて int  by jflute (2025/10/14)
+        // (IntelliJの補完で、戻り値を導出するようにしましょう: .var )
         long count = memberBhv.selectCount(cb -> {});
     
         // ## Assert ##
