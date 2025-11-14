@@ -2,7 +2,9 @@ package org.docksidestage.handson.exercise;
 
 import javax.annotation.Resource;
 
+import org.dbflute.cbean.result.ListResultBean;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
+import org.docksidestage.handson.dbflute.exentity.Member;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
 // done jflute 次回1on1, section2からのふぉろー (2025/10/14)
@@ -22,7 +24,7 @@ import org.docksidestage.handson.unit.UnitContainerTestCase;
 // done hase [読み物課題] 応援してる "A" にもデメリットはあるよ by jflute (2025/10/14)
 // https://jflute.hatenadiary.jp/entry/20181008/yourademerit
 // #1on1: なぜコードの体裁にこだわるのか？フラッシュ記憶しやすいように。フラッシュ記憶できると...↓
-// TODO hase [読み物課題] 別にパソコンがなくてもプログラミングはできるよ by jflute (2025/10/29)
+// TODO done hase [読み物課題] 別にパソコンがなくてもプログラミングはできるよ by jflute (2025/10/29)
 // https://jflute.hatenadiary.jp/entry/20170923/nopcpg
 
 // TODO jflute いつか1on1で、IntelliJの.ideaのお話 (2025/10/14)
@@ -32,7 +34,7 @@ import org.docksidestage.handson.unit.UnitContainerTestCase;
 // 引用:
 // ハンズオンをどこかの Git で管理する場合は、logファイルを .gitignore に登録しておきましょう。
 // (logディレクトリに.gitignoreファイルを作成し、*.logと指定しておくでOKです)
-// TODO hase 既存のコミット済みのものはそのままなので削除コミットしましょう by jflute (2025/10/29)
+// TODO done hase 既存のコミット済みのものはそのままなので削除コミットしましょう by jflute (2025/10/29)
 // (.gitignoreのニュアンス、今後コミットするときにignoreにするって感じ)
 // #1on1: .gitignore戦略の話 (設定ファイルを綺麗に、階層をうまく使う)
 
@@ -58,21 +60,64 @@ public class HandsOn02Test extends UnitContainerTestCase{
     // #1on1: 補完テンプレートの _ll, _li をぜひ
     public void test_existsTestData() throws Exception {
         // ## Arrange ##
-        
+
         // ## Act ##
         // done hase 戻り値はlongじゃなくて int  by jflute (2025/10/14)
         // (IntelliJの補完で、戻り値を導出するようにしましょう: .var )
         int count = memberBhv.selectCount(cb -> {});
-    
+
         // ## Assert ##
         assertTrue(count > 0);
     }
-    public void test_candidateNameStartsWithS() throws Exception {
+
+    public void test_selectMemberStartsWithS() throws Exception {
         // ## Arrange ##
-        
-        
+
         // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().setMemberName_LikeSearch("S", op -> op.likePrefix());
+            cb.query().addOrderBy_MemberName_Asc();
+        });
 
         // ## Assert ##
+        assertFalse(memberList.isEmpty());
+        for (Member member : memberList) {
+            log(member.getMemberName());
+            assertTrue(member.getMemberName().startsWith("S"));
+        }
     }
+
+    /**
+     * 会員IDが1の会員を検索
+     */
+    public void test_selectMemberById() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        Member member = memberBhv.selectEntity(cb -> {
+            cb.query().setMemberId_Equal(1);
+        }).get();
+
+        // ## Assert ##
+        log(member.getMemberName());
+        assertEquals(1, member.getMemberId());
+    }
+    
+    public void test_selectMemberNoBirthdate() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().setBirthdate_IsNull();
+            cb.query().addOrderBy_UpdateDatetime_Desc();
+        });
+
+        // ## Assert ##
+        assertFalse(memberList.isEmpty());
+        for (Member member : memberList) {
+            log(member.getMemberName());
+            assertNull(member.getBirthdate());
+        }
+    }
+
 }
