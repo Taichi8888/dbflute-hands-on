@@ -24,7 +24,7 @@ import org.docksidestage.handson.unit.UnitContainerTestCase;
 // done hase [読み物課題] 応援してる "A" にもデメリットはあるよ by jflute (2025/10/14)
 // https://jflute.hatenadiary.jp/entry/20181008/yourademerit
 // #1on1: なぜコードの体裁にこだわるのか？フラッシュ記憶しやすいように。フラッシュ記憶できると...↓
-// TODO done hase [読み物課題] 別にパソコンがなくてもプログラミングはできるよ by jflute (2025/10/29)
+// done hase [読み物課題] 別にパソコンがなくてもプログラミングはできるよ by jflute (2025/10/29)
 // https://jflute.hatenadiary.jp/entry/20170923/nopcpg
 
 // TODO jflute いつか1on1で、IntelliJの.ideaのお話 (2025/10/14)
@@ -34,11 +34,17 @@ import org.docksidestage.handson.unit.UnitContainerTestCase;
 // 引用:
 // ハンズオンをどこかの Git で管理する場合は、logファイルを .gitignore に登録しておきましょう。
 // (logディレクトリに.gitignoreファイルを作成し、*.logと指定しておくでOKです)
-// TODO done hase 既存のコミット済みのものはそのままなので削除コミットしましょう by jflute (2025/10/29)
+// done hase 既存のコミット済みのものはそのままなので削除コミットしましょう by jflute (2025/10/29)
 // (.gitignoreのニュアンス、今後コミットするときにignoreにするって感じ)
 // #1on1: .gitignore戦略の話 (設定ファイルを綺麗に、階層をうまく使う)
 
 // done hase javadocお願い by jflute (2025/10/14)
+
+// #1on1: 例外翻訳の実践 (2025/11/14)
+// Field 'REGISTER_DATETIME' doesn't have a default value
+// *And also check the insert values to not-null columns.
+// A     ->    B    ->     C     ->     D 全部大事
+// この論理がわかれば全部読もうとするはず。
 
 /**
  * セクション2のテストクラス
@@ -72,14 +78,23 @@ public class HandsOn02Test extends UnitContainerTestCase{
 
     public void test_selectMemberStartsWithS() throws Exception {
         // ## Arrange ##
+        // #1on1: "S" を変数に出すか出さないか？UnitTestの実装ポリシー次第。(現場によって変わる)
+        // 個人的には、わりと変数に出して抽象化はして、実験とかしやすいようにするけど...
 
         // ## Act ##
+        // #1on1: IntelliJでの補完を想定したライブコーディング (2025/11/14)
+        // TODO hase キャメルケースコード補完 by jflute (2025/11/14)
+        // https://dbflute.seasar.org/ja/manual/topic/programming/completion/camelcase.html
+        // あと、戻り値の補完、IntelliJだと .var
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.query().setMemberName_LikeSearch("S", op -> op.likePrefix());
             cb.query().addOrderBy_MemberName_Asc();
         });
 
         // ## Assert ##
+        // TODO hase assertHasAnyElement()というメソッド用意してるのでそっち使ってみてください by jflute (2025/11/14)
+        //  e.g. assertHasAnyElement(memberList);
+        // assH + 補完でenter で、memberList を入れる
         assertFalse(memberList.isEmpty());
         for (Member member : memberList) {
             log(member.getMemberName());
@@ -94,6 +109,19 @@ public class HandsOn02Test extends UnitContainerTestCase{
         // ## Arrange ##
 
         // ## Act ##
+        // #1on1: javatryと合わせて、Optionalの根幹となる機能のお話 (2025/11/14)
+        // 根幹にプラスして、実装しやすさの演出をするメソッドたち e.g. ifPresent(), map()
+        //
+        // #1on1: UnitTestとしては、1がなかったら論外なので、問答無用get()しちゃっている (2025/11/14)
+        // 一方で、Optionalで問答無用get()はあまり良くないと言われている。
+        // ただ、データベースの検索においては、条件値によって「絶対あるよ、なけりゃ落ちていい」って状況がある。
+        // 例えば、一覧画面で絶対に存在することが保証されたIDを受け取って詳細検索するってとき...
+        // (すれ違いのときは例外で落ちていいみたいとき)
+        // なので、DBFluteでは、その状況が正しく把握できていれば、時に問答無用get()でも良いとしている。
+        // 
+        // もちろん、get()じゃなくて、orElseThrow() を常に使いましょうというのは正論ではある。
+        // get()で落ちたら NoSuchElementException ということで NullPo と情報量変わらない。
+        // TODO jflute 1on1続き (2025/11/14)
         Member member = memberBhv.selectEntity(cb -> {
             cb.query().setMemberId_Equal(1);
         }).get();
