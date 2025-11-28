@@ -83,21 +83,27 @@ public class HandsOn02Test extends UnitContainerTestCase{
 
         // ## Act ##
         // #1on1: IntelliJでの補完を想定したライブコーディング (2025/11/14)
-        // TODO done hase キャメルケースコード補完 by jflute (2025/11/14)
+        // done hase キャメルケースコード補完 by jflute (2025/11/14)
         // https://dbflute.seasar.org/ja/manual/topic/programming/completion/camelcase.html
         // あと、戻り値の補完、IntelliJだと .var
+        // #1on1: ConditionBeanのメソッドの探し方
+        // o ConditionBeanのオフィシャルサイトを見る (まず一次情報を見よう)
+        // o AIに聞く
+        // o query()メソッドのJavaDoc
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.query().setMemberName_LikeSearch("S", op -> op.likePrefix());
             cb.query().addOrderBy_MemberName_Asc();
         });
 
         // ## Assert ##
-        // TODO hase assertHasAnyElement()というメソッド用意してるのでそっち使ってみてください by jflute (2025/11/14)
+        // done hase assertHasAnyElement()というメソッド用意してるのでそっち使ってみてください by jflute (2025/11/14)
         //  e.g. assertHasAnyElement(memberList);
         // assH + 補完でenter で、memberList を入れる
         //assertFalse(memberList.isEmpty());
         assertHasAnyElement(memberList);
         for (Member member : memberList) {
+            // TODO hase getMemberName()を変数に切り出してみましょう by jflute (2025/11/28)
+            // IntelliJだと、control + T でリファクタリングメニューで抽出できる。
             log(member.getMemberName());
             assertTrue(member.getMemberName().startsWith("S"));
         }
