@@ -83,7 +83,7 @@ public class HandsOn02Test extends UnitContainerTestCase{
 
         // ## Act ##
         // #1on1: IntelliJでの補完を想定したライブコーディング (2025/11/14)
-        // TODO hase キャメルケースコード補完 by jflute (2025/11/14)
+        // TODO done hase キャメルケースコード補完 by jflute (2025/11/14)
         // https://dbflute.seasar.org/ja/manual/topic/programming/completion/camelcase.html
         // あと、戻り値の補完、IntelliJだと .var
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
@@ -95,7 +95,8 @@ public class HandsOn02Test extends UnitContainerTestCase{
         // TODO hase assertHasAnyElement()というメソッド用意してるのでそっち使ってみてください by jflute (2025/11/14)
         //  e.g. assertHasAnyElement(memberList);
         // assH + 補完でenter で、memberList を入れる
-        assertFalse(memberList.isEmpty());
+        //assertFalse(memberList.isEmpty());
+        assertHasAnyElement(memberList);
         for (Member member : memberList) {
             log(member.getMemberName());
             assertTrue(member.getMemberName().startsWith("S"));
@@ -141,7 +142,8 @@ public class HandsOn02Test extends UnitContainerTestCase{
         });
 
         // ## Assert ##
-        assertFalse(memberList.isEmpty());
+        // assertFalse(memberList.isEmpty());
+        assertHasAnyElement(memberList);
         for (Member member : memberList) {
             log(member.getMemberName());
             assertNull(member.getBirthdate());
