@@ -102,7 +102,7 @@ public class HandsOn02Test extends UnitContainerTestCase{
         //assertFalse(memberList.isEmpty());
         assertHasAnyElement(memberList);
         for (Member member : memberList) {
-            // TODO done hase getMemberName()を変数に切り出してみましょう by jflute (2025/11/28)
+            // done hase getMemberName()を変数に切り出してみましょう by jflute (2025/11/28)
             // IntelliJだと、control + T でリファクタリングメニューで抽出できる。
             String memberName = member.getMemberName();
             log(memberName);
