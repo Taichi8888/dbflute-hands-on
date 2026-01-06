@@ -11,8 +11,11 @@ import javax.annotation.Resource;
 import org.dbflute.cbean.result.ListResultBean;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.MemberSecurityBhv;
+import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
 import org.docksidestage.handson.dbflute.exentity.Member;
 import org.docksidestage.handson.dbflute.exentity.MemberSecurity;
+import org.docksidestage.handson.dbflute.exentity.Product;
+import org.docksidestage.handson.dbflute.exentity.Purchase;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
 // #1on1: 最近、調子が悪い (2025/12/16)
@@ -52,6 +55,8 @@ public class HandsOn03Test extends UnitContainerTestCase {
     private MemberBhv memberBhv;
     @Resource
     private MemberSecurityBhv memberSecurityBhv;
+    @Resource
+    private PurchaseBhv purchaseBhv;
 
     public void test_selectMemberStartsWithSBornBefore1968() throws Exception {
         // ## Arrange ##
@@ -242,7 +247,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
         int alreadyAppearedCount = 0;
         for (Member member : memberList) {
             String current = member.getMemberStatusCode();
-
+            log(current, member.getMemberId());
             if (previous != null && !previous.equals(current)) {
                 // #1on1 他のやり方の例 (2026/01/06)
                 // e.g. assertFalse(statusList.contains(current));
@@ -257,12 +262,41 @@ public class HandsOn03Test extends UnitContainerTestCase {
         assertEquals(0,alreadyAppearedCount);
     }
     
-    public void test_() throws Exception {
+    public void test_selectPurchaseWithMemberHasBirthdate() throws Exception {
         // ## Arrange ##
-        
-        
+
         // ## Act ##
+        ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
+            cb.setupSelect_Member().withMemberStatus();
+            cb.setupSelect_Product();
+            cb.query().queryMember().setBirthdate_IsNotNull();
+            cb.query().addOrderBy_PurchaseDatetime_Desc();
+            cb.query().addOrderBy_PurchasePrice_Desc();
+            cb.query().addOrderBy_ProductId_Asc();
+            cb.query().addOrderBy_MemberId_Asc();
+        });
     
+        // ## Assert ##
+        assertHasAnyElement(purchaseList);
+        purchaseList.forEach(purchase -> {
+            purchase.getMember().alwaysPresent(member -> {
+                Product product = purchase.getProduct().get();
+                log(member.getMemberName(), member.getMemberStatus().get(), product.getProductName());
+                log(purchase.getPurchaseDatetime(), purchase.getPurchasePrice(), product.getProductId(), member.getMemberId());
+                assertNotNull(member.getBirthdate());
+            });
+        });
+    }
+
+    public void test_selectMemberRegisteredFrom20051001To20051003() throws Exception {
+        // ## Arrange ##
+
+        LocalDate fromDate = toLocalDate("2005-10-01");  // 日付だけ
+        LocalDate toDate = toLocalDate("2005-10-03");    // 日付だけ
+        String wordContainedInName = "vi";
+
+        // ## Act ##
+
         // ## Assert ##
     }
 }
