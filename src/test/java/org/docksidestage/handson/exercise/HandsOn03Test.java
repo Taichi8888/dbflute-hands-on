@@ -1,6 +1,10 @@
 package org.docksidestage.handson.exercise;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -8,6 +12,7 @@ import org.dbflute.cbean.result.ListResultBean;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.MemberSecurityBhv;
 import org.docksidestage.handson.dbflute.exentity.Member;
+import org.docksidestage.handson.dbflute.exentity.MemberSecurity;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
 // #1on1: 最近、調子が悪い (2025/12/16)
@@ -51,33 +56,41 @@ public class HandsOn03Test extends UnitContainerTestCase {
     public void test_selectMemberStartsWithSBornBefore1968() throws Exception {
         // ## Arrange ##
         String prefix = "S";
-        // TODO hase プログラムの世界でDayだと、日数とか日だけを指すニュアンスになることが多い by jflute (2025/11/28)
+        // TODO done hase プログラムの世界でDayだと、日数とか日だけを指すニュアンスになることが多い by jflute (2025/11/28)
        // ここでは日付、年月日なので、Dateの方が誤解が少ない。renameお願いします。
-        LocalDate xDay = toLocalDate("1968-01-01");
+        LocalDate targetDate = toLocalDate("1968-01-01");
 
         // ## Act ##
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
-            cb.setupSelect_MemberStatus();
+            // cb.setupSelect_MemberStatus();
             cb.query().setMemberName_LikeSearch(prefix, op -> op.likePrefix());
             // #1on1: 日付の言葉の曖昧さについて (2025/11/28)
-            // TODO hase LocalDateをもっかいLocalDateにしている by jflute (2025/11/28)
-            cb.query().setBirthdate_LessEqual(toLocalDate(xDay));
+            // TODO done hase LocalDateをもっかいLocalDateにしている by jflute (2025/11/28)
+            cb.query().setBirthdate_LessEqual(targetDate);
             cb.query().addOrderBy_MemberName_Asc();
         });
 
         // ## Assert ##
         assertHasAnyElement(memberList);
-        for (Member member : memberList) {
-            // TODO hase 変数抽出を by jflute (2025/11/28)
-            log(member.getMemberName() + ", " + member.getBirthdate());
-            // TODO hase ここ、getMemberStatus(), アサートが成り立ってないです。 by jflute (2025/11/28)
-            // setupSelectを一時的にコメントアウトしても落ちないのはなぜ？
-            assertNotNull(member.getMemberStatus());
-            assertTrue(member.getMemberName().startsWith(prefix));
-            assertFalse(member.getBirthdate().isAfter(toLocalDate(xDay)));
-        }
+//        for (Member member : memberList) {
+//            // TODO done hase 変数抽出を by jflute (2025/11/28)
+//            log(member.getMemberName() + ", " + member.getBirthdate());
+//            // TODO done hase ここ、getMemberStatus(), アサートが成り立ってないです。 by jflute (2025/11/28)
+//            // setupSelectを一時的にコメントアウトしても落ちないのはなぜ？
+        // fk制約でnot nullだから、必ず存在する。
+//            assertNotNull(member.getMemberStatus());
+//            assertTrue(member.getMemberName().startsWith(prefix));
+//            assertFalse(member.getBirthdate().isAfter(toLocalDate(targetDate)));
+//        }
+        memberList.forEach(member -> {
+            String memberName = member.getMemberName();
+            LocalDate birthdate = member.getBirthdate();
+            log(memberName + ", " + birthdate);
+            assertTrue(memberName.startsWith(prefix));
+            assertFalse(birthdate.isAfter(targetDate));
+        });
     }
-    
+
     public void test_selectMemberWithStatusAndSecurity() throws Exception {
         // ## Arrange ##
         
@@ -114,7 +127,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             assertTrue(member.getMemberStatus().isPresent());
             assertTrue(member.getMemberSecurityAsOne().isPresent());
         });
-        // TODO hase [読み物課題] コードにコメント書くのにDBにコメント書かないの？ by jflute (2025/11/28)
+        // TODO done hase [読み物課題] コードにコメント書くのにDBにコメント書かないの？ by jflute (2025/11/28)
         // https://jflute.hatenadiary.jp/entry/20170628/letsdbcomment
     }
     // TODO jflute 次回1on1ここから (2025/11/28)
@@ -142,14 +155,25 @@ public class HandsOn03Test extends UnitContainerTestCase {
         //
         // #1on1: 修行++の話。テストだからループ内で検索でもOKだけど、メインコードだったら基本的に非推奨。
         // SQLの発行するという事務的な行為自体が20倍になってパフォーマンス少し落ちるということがある。
-        // TODO hase ということで修行++がんばってみてください by jflute (2025/12/16)
+        // TODO done hase ということで修行++がんばってみてください by jflute (2025/12/16)
         assertHasAnyElement(memberList);
+//        memberList.forEach(member -> {
+//            memberSecurityBhv.selectByPK(member.getMemberId()).alwaysPresent(security -> {
+//                String question = security.getReminderQuestion();
+//                log(member.getMemberName(), question);
+//                assertTrue(question.contains(wordIncluded));
+//            });
+//        });
+        ListResultBean<MemberSecurity> securityList = memberSecurityBhv.selectList(cb -> {
+            cb.query().setMemberId_InScope(memberBhv.extractMemberIdList(memberList));
+        });
+        Map<Integer, MemberSecurity> securityMap = securityList.stream()
+                .collect(Collectors.toMap(security -> security.getMemberId(), security -> security));
         memberList.forEach(member -> {
-            memberSecurityBhv.selectByPK(member.getMemberId()).alwaysPresent(security -> {
-                String question = security.getReminderQuestion();
-                log(member.getMemberName(), question);
-                assertTrue(question.contains(wordIncluded));
-            });
+            MemberSecurity security = securityMap.get(member.getMemberId());
+            String question = security.getReminderQuestion();
+            log(member.getMemberName(), question);
+            assertTrue(question.contains(wordIncluded));
         });
         /*
   o
@@ -179,5 +203,46 @@ public class HandsOn03Test extends UnitContainerTestCase {
  | iPhone | <--------------------------------------+
  +--------+  (JSON response) e.g. {"name": "jflute", "favorite": "sea"}
          */
+    }
+
+    public void test_selectMemberOrderByStatusDisplayOrder() throws Exception {
+        // ## Arrange ##
+        
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().queryMemberStatus().addOrderBy_DisplayOrder_Asc();
+            cb.query().addOrderBy_MemberId_Desc();
+        });
+        // ## Assert ##
+        assertHasAnyElement(memberList);
+
+        memberList.forEach(member -> {
+            assertFalse(member.getMemberStatus().isPresent());
+        });
+
+        List<String> statusList = new ArrayList<String>(); // Stringは省略可能らしいが勉強用にあえて残しておく by hase (2026/1/2)
+        String previous = null;
+        int alreadyAppearedCount = 0;
+        for (Member member : memberList) {
+            String current = member.getMemberStatusCode();
+
+            if (previous != null && !previous.equals(current)) {
+                if (statusList.contains(current)) {
+                    alreadyAppearedCount ++;
+                }
+            }
+            statusList.add(current);
+            previous = current;
+        }
+        assertEquals(0,alreadyAppearedCount);
+    }
+    
+    public void test_() throws Exception {
+        // ## Arrange ##
+        
+        
+        // ## Act ##
+    
+        // ## Assert ##
     }
 }
