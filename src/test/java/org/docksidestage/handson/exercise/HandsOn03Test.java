@@ -56,8 +56,9 @@ public class HandsOn03Test extends UnitContainerTestCase {
     public void test_selectMemberStartsWithSBornBefore1968() throws Exception {
         // ## Arrange ##
         String prefix = "S";
-        // TODO done hase プログラムの世界でDayだと、日数とか日だけを指すニュアンスになることが多い by jflute (2025/11/28)
-       // ここでは日付、年月日なので、Dateの方が誤解が少ない。renameお願いします。
+        
+        // done hase プログラムの世界でDayだと、日数とか日だけを指すニュアンスになることが多い by jflute (2025/11/28)
+        // ここでは日付、年月日なので、Dateの方が誤解が少ない。renameお願いします。
         LocalDate targetDate = toLocalDate("1968-01-01");
 
         // ## Act ##
@@ -65,7 +66,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             // cb.setupSelect_MemberStatus();
             cb.query().setMemberName_LikeSearch(prefix, op -> op.likePrefix());
             // #1on1: 日付の言葉の曖昧さについて (2025/11/28)
-            // TODO done hase LocalDateをもっかいLocalDateにしている by jflute (2025/11/28)
+            // done hase LocalDateをもっかいLocalDateにしている by jflute (2025/11/28)
             cb.query().setBirthdate_LessEqual(targetDate);
             cb.query().addOrderBy_MemberName_Asc();
         });
@@ -73,9 +74,9 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // ## Assert ##
         assertHasAnyElement(memberList);
 //        for (Member member : memberList) {
-//            // TODO done hase 変数抽出を by jflute (2025/11/28)
+//            // done hase 変数抽出を by jflute (2025/11/28)
 //            log(member.getMemberName() + ", " + member.getBirthdate());
-//            // TODO done hase ここ、getMemberStatus(), アサートが成り立ってないです。 by jflute (2025/11/28)
+//            // done hase ここ、getMemberStatus(), アサートが成り立ってないです。 by jflute (2025/11/28)
 //            // setupSelectを一時的にコメントアウトしても落ちないのはなぜ？
         // fk制約でnot nullだから、必ず存在する。
 //            assertNotNull(member.getMemberStatus());
@@ -127,7 +128,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             assertTrue(member.getMemberStatus().isPresent());
             assertTrue(member.getMemberSecurityAsOne().isPresent());
         });
-        // TODO done hase [読み物課題] コードにコメント書くのにDBにコメント書かないの？ by jflute (2025/11/28)
+        // done hase [読み物課題] コードにコメント書くのにDBにコメント書かないの？ by jflute (2025/11/28)
         // https://jflute.hatenadiary.jp/entry/20170628/letsdbcomment
     }
     // TODO jflute 次回1on1ここから (2025/11/28)
@@ -155,7 +156,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
         //
         // #1on1: 修行++の話。テストだからループ内で検索でもOKだけど、メインコードだったら基本的に非推奨。
         // SQLの発行するという事務的な行為自体が20倍になってパフォーマンス少し落ちるということがある。
-        // TODO done hase ということで修行++がんばってみてください by jflute (2025/12/16)
+        // done hase ということで修行++がんばってみてください by jflute (2025/12/16)
         assertHasAnyElement(memberList);
 //        memberList.forEach(member -> {
 //            memberSecurityBhv.selectByPK(member.getMemberId()).alwaysPresent(security -> {
@@ -167,6 +168,11 @@ public class HandsOn03Test extends UnitContainerTestCase {
         ListResultBean<MemberSecurity> securityList = memberSecurityBhv.selectList(cb -> {
             cb.query().setMemberId_InScope(memberBhv.extractMemberIdList(memberList));
         });
+        // #1on1 このベタ書きを、Streamが代理してやってくれているだけ (抽象度が一個上がった) (2026/01/06)
+        //Map<Integer, MemberSecurity> manualMap = new HashMap<>();
+        //for (MemberSecurity security : securityList) {
+        //    manualMap.put(security.getMemberId(), security);
+        //}
         Map<Integer, MemberSecurity> securityMap = securityList.stream()
                 .collect(Collectors.toMap(security -> security.getMemberId(), security -> security));
         memberList.forEach(member -> {
@@ -220,6 +226,17 @@ public class HandsOn03Test extends UnitContainerTestCase {
             assertFalse(member.getMemberStatus().isPresent());
         });
 
+        // TODO hase Set を使うとさらに良い、パフォーマンス的に by jflute (2026/01/06)
+        // List, Set, Map があって、List と Set は似ててちょい違う。
+        // List: 重複を許す
+        // Set: 重複を許さない => add()してもエラーにならず、ただ吸収されるだけ(追加されない)
+        // 今のstatusListは、Aが何回来たか？の情報まで持ってるけど、その必要がない。
+        // e.g. A,A,A,A,A,A,A,A,A,A,A,B,B,B,B,B,B,B,B,B,B,B,B,C,C,C,C,C,C,C,C
+        // これがSetであれば、e.g. A, B, C
+        // ということで、containsのパフォーマンスに影響する。(厳密にはadd()も)
+        // Listでやり切るのであれば、add()を最低限にした方が良い by はせ
+        // #1on1 HashSetのソースコードも読んでみた
+        // #1on1 contains()のソースコードも読んでみた
         List<String> statusList = new ArrayList<String>(); // Stringは省略可能らしいが勉強用にあえて残しておく by hase (2026/1/2)
         String previous = null;
         int alreadyAppearedCount = 0;
@@ -227,6 +244,9 @@ public class HandsOn03Test extends UnitContainerTestCase {
             String current = member.getMemberStatusCode();
 
             if (previous != null && !previous.equals(current)) {
+                // #1on1 他のやり方の例 (2026/01/06)
+                // e.g. assertFalse(statusList.contains(current));
+                // e.g. ++switchCount;
                 if (statusList.contains(current)) {
                     alreadyAppearedCount ++;
                 }
