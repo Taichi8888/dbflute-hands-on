@@ -1,9 +1,8 @@
 package org.docksidestage.handson.exercise;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -231,7 +230,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             assertFalse(member.getMemberStatus().isPresent());
         });
 
-        // TODO hase Set を使うとさらに良い、パフォーマンス的に by jflute (2026/01/06)
+        // TODO done hase Set を使うとさらに良い、パフォーマンス的に by jflute (2026/01/06)
         // List, Set, Map があって、List と Set は似ててちょい違う。
         // List: 重複を許す
         // Set: 重複を許さない => add()してもエラーにならず、ただ吸収されるだけ(追加されない)
@@ -242,24 +241,39 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // Listでやり切るのであれば、add()を最低限にした方が良い by はせ
         // #1on1 HashSetのソースコードも読んでみた
         // #1on1 contains()のソースコードも読んでみた
-        List<String> statusList = new ArrayList<String>(); // Stringは省略可能らしいが勉強用にあえて残しておく by hase (2026/1/2)
+
+//        // Listでやるなら、add()を減らす
+//        List<String> statusList = new ArrayList<String>(); // Stringは省略可能らしいが勉強用にあえて残しておく by hase (2026/1/2)
+//        String previous = null;
+//        int alreadyAppearedCount = 0;
+//        for (Member member : memberList) {
+//            String current = member.getMemberStatusCode();
+//            log(current, member.getMemberId());
+//            if (previous != null && !previous.equals(current)) {
+//                // #1on1 他のやり方の例 (2026/01/06)
+//                // e.g. assertFalse(statusList.contains(current));
+//                // e.g. ++switchCount;
+//                if (statusList.contains(current)) {
+//                    alreadyAppearedCount ++;
+//                }
+//                statusList.add(current);
+//            }
+//            log(statusList.size());
+//            previous = current;
+//        }
+//        assertEquals(0,alreadyAppearedCount);
+
+        Set<String> statusSet = new java.util.HashSet<>();
         String previous = null;
-        int alreadyAppearedCount = 0;
         for (Member member : memberList) {
             String current = member.getMemberStatusCode();
             log(current, member.getMemberId());
-            if (previous != null && !previous.equals(current)) {
-                // #1on1 他のやり方の例 (2026/01/06)
-                // e.g. assertFalse(statusList.contains(current));
-                // e.g. ++switchCount;
-                if (statusList.contains(current)) {
-                    alreadyAppearedCount ++;
-                }
+            if(previous != null && !current.equals(previous)) {
+                assertFalse(statusSet.contains(current));
             }
-            statusList.add(current);
+            statusSet.add(current);
             previous = current;
         }
-        assertEquals(0,alreadyAppearedCount);
     }
     
     public void test_selectPurchaseWithMemberHasBirthdate() throws Exception {
