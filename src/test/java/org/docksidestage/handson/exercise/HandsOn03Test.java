@@ -230,7 +230,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             assertFalse(member.getMemberStatus().isPresent());
         });
 
-        // TODO done hase Set を使うとさらに良い、パフォーマンス的に by jflute (2026/01/06)
+        // done hase Set を使うとさらに良い、パフォーマンス的に by jflute (2026/01/06)
         // List, Set, Map があって、List と Set は似ててちょい違う。
         // List: 重複を許す
         // Set: 重複を許さない => add()してもエラーにならず、ただ吸収されるだけ(追加されない)
@@ -280,6 +280,11 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // ## Arrange ##
 
         // ## Act ##
+        // #1on1: PURCHASEを基点テーブルにしているのが素晴らしい (2026/01/20)
+        // 「要件を正確に解釈する」、意外に難しいもの、でもこれができれば効率良い。
+        //  → 手戻りを発生させないこと。
+        // 国語大事話。 (2026/01/20)
+        // 基点テーブルの話。
         ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
             cb.setupSelect_Member().withMemberStatus();
             cb.setupSelect_Product();
@@ -300,6 +305,27 @@ public class HandsOn03Test extends UnitContainerTestCase {
                 assertNotNull(member.getBirthdate());
             });
         });
+        // #1on1: 問答無用get()を回避しようとして、結局get()と変わらないパターン (2026/01/20)
+        //Member member2 = purchase.getMember().orElseThrow(() -> {
+        //    throw new IllegalStateException("なかったです。");
+        //});
+        // 一方で、ちゃんとしてorElseThrow()を書けるか？書こうとするか？
+        // なので、DBFluteのOptionalは、組み込みの例外メッセージをリッチにデバッグしやすいようにした。
+        // section2の方でも続きの話をした。
+        /* ifPresent()の話 (2026/01/20)
+        purchase.getMember().ifPresent(mb -> {
+            log(mb.getMemberId());
+        }).orElse(() -> {
+            log("not found");
+        });
+        purchase.getMember().ifPresentOrElse(mb -> {
+            log(mb.getMemberId());
+        }, () -> {
+            log("not found");
+        });
+        */
+        // #1on1: Optionalのコンセプトは奥深いものなので、コンセプト理解して使わないと...
+        // Optionalの意義をなくす実装 (だいなし) をしてしまう可能性がある。 (2026/01/20)
     }
 
     public void test_selectMemberRegisteredFrom20051001To20051003() throws Exception {

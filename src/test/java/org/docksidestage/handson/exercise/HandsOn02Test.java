@@ -129,7 +129,15 @@ public class HandsOn02Test extends UnitContainerTestCase{
         // 
         // もちろん、get()じゃなくて、orElseThrow() を常に使いましょうというのは正論ではある。
         // get()で落ちたら NoSuchElementException ということで NullPo と情報量変わらない。
-        // TODO jflute 1on1続き (2025/11/14)
+        // done jflute 1on1続き (2025/11/14)
+        // #1on1: section3にて、alwaysPresent()とかの例外メッセージの話をした。
+        // さらに、例外翻訳させて独自例外を投げるorElseTranslatingThrow()の話。
+        //Member member = memberBhv.selectEntity(cb -> {
+        //    cb.query().setMemberId_Equal(1);
+        //}).orElseTranslatingThrow(cause -> {
+        //    return new ResumeNotFoundException("aaaaaaaaaaaaaaa", cause);
+        //});
+        
         Member member = memberBhv.selectEntity(cb -> {
             cb.query().setMemberId_Equal(1);
         }).get();
