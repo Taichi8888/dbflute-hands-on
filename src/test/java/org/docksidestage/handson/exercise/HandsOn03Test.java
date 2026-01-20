@@ -1,6 +1,7 @@
 package org.docksidestage.handson.exercise;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
+import org.dbflute.helper.HandyDate;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.MemberSecurityBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
@@ -302,15 +304,30 @@ public class HandsOn03Test extends UnitContainerTestCase {
         });
     }
 
-    public void test_selectMemberRegisteredFrom20051001To20051003() throws Exception {
+    public void test_selectMemberFormalizedFrom20051001To20051003() throws Exception {
         // ## Arrange ##
 
-        LocalDate fromDate = toLocalDate("2005-10-01");  // 日付だけ
-        LocalDate toDate = toLocalDate("2005-10-03");    // 日付だけ
+        String fromDateStr = "2005/10/01";
+        String toDateStr = "2005/10/03";
+        LocalDateTime fromDate = new HandyDate(fromDateStr).getLocalDateTime();
+        LocalDateTime toDate = new HandyDate(toDateStr).getLocalDateTime();
         String wordContainedInName = "vi";
 
         // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.specify().specifyMemberStatus().columnMemberStatusName();
+            cb.query().setFormalizedDatetime_FromTo(fromDate, toDate, op -> op.compareAsDate());
+            cb.query().setMemberName_LikeSearch(wordContainedInName, op -> op.likeContain());
+        });
 
         // ## Assert ##
+        assertHasAnyElement(memberList);
+        memberList.forEach(member -> {
+            log(member.getMemberName(), member.getFormalizedDatetime(), member.getMemberStatus().get().getMemberStatusName());
+            assertTrue(!member.getFormalizedDatetime().isBefore(fromDate));
+            assertTrue(!member.getFormalizedDatetime().isAfter(toDate.plusDays(1)));
+            assertTrue(member.getMemberName().contains(wordContainedInName));
+        });
     }
 }
