@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
 import org.dbflute.exception.NonSpecifiedColumnAccessException;
+import org.docksidestage.handson.dbflute.cbean.bs.BsMemberStatusCB.HpSpecification;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.MemberSecurityBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
@@ -134,7 +135,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // done hase [読み物課題] コードにコメント書くのにDBにコメント書かないの？ by jflute (2025/11/28)
         // https://jflute.hatenadiary.jp/entry/20170628/letsdbcomment
     }
-    // TODO jflute 次回1on1ここから (2025/11/28)
+    // done jflute 次回1on1ここから (2025/11/28)
 
     public void test_selectMemberWithSecurityQuestionContaining2() throws Exception {
         // ## Arrange ##
@@ -329,7 +330,8 @@ public class HandsOn03Test extends UnitContainerTestCase {
 
     public void test_selectMemberFormalizedFrom20051001To20051003() throws Exception {
         // ## Arrange ##
-
+        // #1on1: ザ・まで検索、自然言語だと、「まで」は、その日(その瞬間)も含むことが多い。 (2026/02/03)
+        // 一方で、"来週の水曜まで休みます" 話。
         String fromDateStr = "2005/10/01";
         String toDateStr = "2005/10/03";
         LocalDateTime fromDate = toLocalDateTime(fromDateStr);
@@ -340,6 +342,11 @@ public class HandsOn03Test extends UnitContainerTestCase {
         adjustMember_FormalizedDatetime_FirstOnly(fromDate, wordContainedInName);
 
         // ## Act ##
+        // #1on1: FromToのコンセプトの話。ハンズオンの重要性の話も。 (2026/02/03)
+        // #1on1: SpecifyColumn, 業務でやってた経験があるとのこと。 (2026/02/03)
+        // DBFluteのデフォルトコンセプトでは、カラムの絞りは任意で、そこまで主張してない。(現場判断に任せる)
+        // 現場に寄っては、完全に必須にしてるところもある。必須オプションもある(dfpropにて)。
+        // あと、個別に必須にするメソッドもある: cb.enableSpecifyColumnRequired();
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.setupSelect_MemberStatus();
             cb.specify().specifyMemberStatus().columnMemberStatusName();
@@ -351,7 +358,15 @@ public class HandsOn03Test extends UnitContainerTestCase {
         assertHasAnyElement(memberList);
         memberList.forEach(member -> {
             MemberStatus status = member.getMemberStatus().get();
+            // TODO hase 主役のカラムは、変数抽出して見やすくしましょう getFormalizedDatetime() by jflute (2026/02/03)
             log(member.getMemberName(), member.getFormalizedDatetime(), status.getMemberStatusName());
+            // TODO hase 自分で見つけてくれた。assertFalse()でいい by jflute (2026/02/03)
+            // TODO hase toDate.plusDays(1), ループの中でループ回数分実行されるので、超若干コストが掛かっている by jflute (2026/02/03)
+            // #1on1: UnitTestなので目くじらを立てなくてもいいかもだけど、そういった感覚を得てもらうために抽出しましょう。
+            // ループの中の処理というのは、繰り返されるので、コストが倍々になっていく意識を持って欲しい。
+            // DBアクセスのループも避けたいし、リモートAPIのループも避けたい。
+            // TODO hase [読み物課題] 単純な話、getであんまり検索したくない by jflute (2026/02/03)
+            // https://jflute.hatenadiary.jp/entry/20151020/stopgetselect
             assertTrue(!member.getFormalizedDatetime().isBefore(fromDate));
             assertTrue(!member.getFormalizedDatetime().isAfter(toDate.plusDays(1)));
             assertTrue(member.getMemberName().contains(wordContainedInName));
