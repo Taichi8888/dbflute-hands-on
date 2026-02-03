@@ -9,14 +9,11 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
-import org.dbflute.helper.HandyDate;
+import org.dbflute.exception.NonSpecifiedColumnAccessException;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.MemberSecurityBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
-import org.docksidestage.handson.dbflute.exentity.Member;
-import org.docksidestage.handson.dbflute.exentity.MemberSecurity;
-import org.docksidestage.handson.dbflute.exentity.Product;
-import org.docksidestage.handson.dbflute.exentity.Purchase;
+import org.docksidestage.handson.dbflute.exentity.*;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
 // #1on1: 最近、調子が悪い (2025/12/16)
@@ -335,9 +332,12 @@ public class HandsOn03Test extends UnitContainerTestCase {
 
         String fromDateStr = "2005/10/01";
         String toDateStr = "2005/10/03";
-        LocalDateTime fromDate = new HandyDate(fromDateStr).getLocalDateTime();
-        LocalDateTime toDate = new HandyDate(toDateStr).getLocalDateTime();
+        LocalDateTime fromDate = toLocalDateTime(fromDateStr);
+        // （勉強用メモ）↑ これは、PlainTestCaseのメソッドで変換だけ。
+        // DBfluteのnew HandyDate(fromDateStr).getLocalDateTime();を使えば、addDay(1)とかも使えて拡張性高い。
+        LocalDateTime toDate = toLocalDateTime(toDateStr);
         String wordContainedInName = "vi";
+        adjustMember_FormalizedDatetime_FirstOnly(fromDate, wordContainedInName);
 
         // ## Act ##
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
@@ -350,10 +350,60 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // ## Assert ##
         assertHasAnyElement(memberList);
         memberList.forEach(member -> {
-            log(member.getMemberName(), member.getFormalizedDatetime(), member.getMemberStatus().get().getMemberStatusName());
+            MemberStatus status = member.getMemberStatus().get();
+            log(member.getMemberName(), member.getFormalizedDatetime(), status.getMemberStatusName());
             assertTrue(!member.getFormalizedDatetime().isBefore(fromDate));
             assertTrue(!member.getFormalizedDatetime().isAfter(toDate.plusDays(1)));
             assertTrue(member.getMemberName().contains(wordContainedInName));
+
+            assertNotNull(member.getMemberStatusCode());
+            assertNotNull(status.getMemberStatusName());
+            assertException(NonSpecifiedColumnAccessException.class, () -> status.getDisplayOrder()); // specified propertyの管理がどのように行われているか、コードで追えなかったので聞いてみたい
+            assertException(NonSpecifiedColumnAccessException.class, () -> status.getDescription());
+        });
+    }
+
+    public void test_selectPurchaseInOneWeekFromFormalized() throws Exception {
+        // ## Arrange ##
+        adjustPurchase_PurchaseDatetime_fromFormalizedDatetimeInWeek();
+        
+        // ## Act ##
+        ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
+            cb.setupSelect_Member().withMemberStatus();
+            cb.setupSelect_Member().withMemberSecurityAsOne();
+            cb.setupSelect_Product().withProductStatus();
+            cb.setupSelect_Product().withProductCategory().withProductCategorySelf();
+            cb.columnQuery(leftCb ->
+                    leftCb.specify().columnPurchaseDatetime()
+            ).lessEqual(rightCb ->
+                    rightCb.specify().specifyMember().columnFormalizedDatetime()
+                            .convert(op -> op.addDay(7))
+            );
+            cb.columnQuery(leftCb ->
+                    leftCb.specify().columnPurchaseDatetime()
+            ).greaterEqual(rightCb -> // 正式登録前も購入できるの知らなかった、log出して気づいた
+                    rightCb.specify().specifyMember().columnFormalizedDatetime()
+            );
+        });
+    
+        // ## Assert ##
+        assertHasAnyElement(purchaseList);
+        purchaseList.forEach(purchase -> {
+            Member member = purchase.getMember().get();
+            Product product = purchase.getProduct().get();
+            MemberStatus memberStatus = member.getMemberStatus().get();
+            MemberSecurity memberSecurity = member.getMemberSecurityAsOne().get();
+            ProductStatus productStatus = product.getProductStatus().get();
+            ProductCategory productCategory = product.getProductCategory().get();
+            ProductCategory parentCategory = productCategory.getProductCategorySelf().get();
+
+            log(member.getMemberName(), memberStatus.getMemberStatusName(), memberSecurity.getReminderQuestion());
+            log(product.getProductName(), productStatus.getProductStatusName(), productCategory.getProductCategoryName(),
+                    parentCategory.getProductCategoryName());
+            log(purchase.getPurchaseDatetime(), member.getFormalizedDatetime());
+
+            assertFalse(purchase.getPurchaseDatetime().isAfter(member.getFormalizedDatetime().plusDays(7)));
+            assertFalse(purchase.getPurchaseDatetime().isBefore(member.getFormalizedDatetime()));
         });
     }
 }
