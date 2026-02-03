@@ -378,6 +378,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
         });
     }
 
+    // TODO jflute 次回1on1ここから (2026/02/03)
     public void test_selectPurchaseInOneWeekFromFormalized() throws Exception {
         // ## Arrange ##
         adjustPurchase_PurchaseDatetime_fromFormalizedDatetimeInWeek();
