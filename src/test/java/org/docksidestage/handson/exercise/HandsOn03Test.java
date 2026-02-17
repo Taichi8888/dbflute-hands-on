@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
 import org.dbflute.exception.NonSpecifiedColumnAccessException;
-import org.docksidestage.handson.dbflute.cbean.bs.BsMemberStatusCB.HpSpecification;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.MemberSecurityBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
@@ -382,6 +381,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
     public void test_selectPurchaseInOneWeekFromFormalized() throws Exception {
         // ## Arrange ##
         adjustPurchase_PurchaseDatetime_fromFormalizedDatetimeInWeek();
+        // moveToDayTerminal()のせいか！！！
         
         // ## Act ##
         ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
@@ -421,5 +421,14 @@ public class HandsOn03Test extends UnitContainerTestCase {
             assertFalse(purchase.getPurchaseDatetime().isAfter(member.getFormalizedDatetime().plusDays(7)));
             assertFalse(purchase.getPurchaseDatetime().isBefore(member.getFormalizedDatetime()));
         });
+    }
+    
+    public void test_selectMemberWithBirthdateBeforeEqual1974OrNull() throws Exception {
+        // ## Arrange ##
+        
+        
+        // ## Act ##
+    
+        // ## Assert ##
     }
 }
