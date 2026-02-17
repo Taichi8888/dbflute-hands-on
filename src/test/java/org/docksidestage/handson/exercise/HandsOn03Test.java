@@ -355,23 +355,29 @@ public class HandsOn03Test extends UnitContainerTestCase {
 
         // ## Assert ##
         assertHasAnyElement(memberList);
+        LocalDateTime toDatePlusOne = toDate.plusDays(1);
         memberList.forEach(member -> {
             MemberStatus status = member.getMemberStatus().get();
-            // TODO hase 主役のカラムは、変数抽出して見やすくしましょう getFormalizedDatetime() by jflute (2026/02/03)
-            log(member.getMemberName(), member.getFormalizedDatetime(), status.getMemberStatusName());
-            // TODO hase 自分で見つけてくれた。assertFalse()でいい by jflute (2026/02/03)
-            // TODO hase toDate.plusDays(1), ループの中でループ回数分実行されるので、超若干コストが掛かっている by jflute (2026/02/03)
+            // TODO done hase 主役のカラムは、変数抽出して見やすくしましょう getFormalizedDatetime() by jflute (2026/02/03)
+            LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
+
+            String memberName = member.getMemberName();
+            String memberStatusName = status.getMemberStatusName();
+
+            log(memberName, formalizedDatetime, memberStatusName);
+            // TODO done hase 自分で見つけてくれた。assertFalse()でいい by jflute (2026/02/03)
+            // TODO done hase toDate.plusDays(1), ループの中でループ回数分実行されるので、超若干コストが掛かっている by jflute (2026/02/03)
             // #1on1: UnitTestなので目くじらを立てなくてもいいかもだけど、そういった感覚を得てもらうために抽出しましょう。
             // ループの中の処理というのは、繰り返されるので、コストが倍々になっていく意識を持って欲しい。
             // DBアクセスのループも避けたいし、リモートAPIのループも避けたい。
-            // TODO hase [読み物課題] 単純な話、getであんまり検索したくない by jflute (2026/02/03)
+            // TODO done hase [読み物課題] 単純な話、getであんまり検索したくない by jflute (2026/02/03)
             // https://jflute.hatenadiary.jp/entry/20151020/stopgetselect
-            assertTrue(!member.getFormalizedDatetime().isBefore(fromDate));
-            assertTrue(!member.getFormalizedDatetime().isAfter(toDate.plusDays(1)));
-            assertTrue(member.getMemberName().contains(wordContainedInName));
+            assertFalse(formalizedDatetime.isBefore(fromDate));
+            assertFalse(formalizedDatetime.isAfter(toDatePlusOne));
+            assertTrue(memberName.contains(wordContainedInName));
 
             assertNotNull(member.getMemberStatusCode());
-            assertNotNull(status.getMemberStatusName());
+            assertNotNull(memberStatusName);
             assertException(NonSpecifiedColumnAccessException.class, () -> status.getDisplayOrder()); // specified propertyの管理がどのように行われているか、コードで追えなかったので聞いてみたい
             assertException(NonSpecifiedColumnAccessException.class, () -> status.getDescription());
         });
@@ -425,10 +431,43 @@ public class HandsOn03Test extends UnitContainerTestCase {
     
     public void test_selectMemberWithBirthdateBeforeEqual1974OrNull() throws Exception {
         // ## Arrange ##
-        
-        
+        String targetDateStr = "1974/01/01";
+        LocalDate targetDate = toLocalDate(targetDateStr);
+
+        String okDateStr = "1974/12/31";
+        String ngDateStr = "1975/01/01";
+        LocalDate limitDate = toLocalDate(okDateStr);
+        LocalDate ngDate = toLocalDate(ngDateStr);
+        // TODO hase adjustメソッド作る？ by hase (2026/02/17)
+
         // ## Act ##
-    
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.setupSelect_MemberSecurityAsOne();
+            cb.setupSelect_MemberWithdrawalAsOne();
+            cb.query().setBirthdate_FromTo(null, targetDate, op -> op.compareAsYear().orIsNull());
+            cb.query().addOrderBy_Birthdate_Desc().withNullsFirst();
+        });
+
         // ## Assert ##
+        assertHasAnyElement(memberList);
+        boolean limitDateAppeared = false;
+        for (Member member : memberList) {
+            MemberStatus status = member.getMemberStatus().get();
+            MemberSecurity security = member.getMemberSecurityAsOne().get();
+            log(status.getMemberStatusName(), security.getReminderQuestion(), security.getReminderAnswer(),
+                    member.getMemberWithdrawalAsOne().map(w -> w.getWithdrawalReasonInputText()).orElse("none"));
+
+            LocalDate birthdate = member.getBirthdate();
+            if (birthdate != null) {
+                assertTrue(birthdate.isBefore(ngDate));
+            }
+            if (birthdate == limitDate) {
+                log("border line asserted correctly!!!" + member.getMemberName(), birthdate);
+                limitDateAppeared = true;
+            }
+        }
+//        assertTrue(limitDateAppeared);
+        assertNull(memberList.get(0).getBirthdate());
     }
 }
