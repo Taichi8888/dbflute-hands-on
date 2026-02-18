@@ -358,19 +358,19 @@ public class HandsOn03Test extends UnitContainerTestCase {
         LocalDateTime toDatePlusOne = toDate.plusDays(1);
         memberList.forEach(member -> {
             MemberStatus status = member.getMemberStatus().get();
-            // TODO done hase 主役のカラムは、変数抽出して見やすくしましょう getFormalizedDatetime() by jflute (2026/02/03)
+            // done hase 主役のカラムは、変数抽出して見やすくしましょう getFormalizedDatetime() by jflute (2026/02/03)
             LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
 
             String memberName = member.getMemberName();
             String memberStatusName = status.getMemberStatusName();
 
             log(memberName, formalizedDatetime, memberStatusName);
-            // TODO done hase 自分で見つけてくれた。assertFalse()でいい by jflute (2026/02/03)
-            // TODO done hase toDate.plusDays(1), ループの中でループ回数分実行されるので、超若干コストが掛かっている by jflute (2026/02/03)
+            // done hase 自分で見つけてくれた。assertFalse()でいい by jflute (2026/02/03)
+            // done hase toDate.plusDays(1), ループの中でループ回数分実行されるので、超若干コストが掛かっている by jflute (2026/02/03)
             // #1on1: UnitTestなので目くじらを立てなくてもいいかもだけど、そういった感覚を得てもらうために抽出しましょう。
             // ループの中の処理というのは、繰り返されるので、コストが倍々になっていく意識を持って欲しい。
             // DBアクセスのループも避けたいし、リモートAPIのループも避けたい。
-            // TODO done hase [読み物課題] 単純な話、getであんまり検索したくない by jflute (2026/02/03)
+            // done hase [読み物課題] 単純な話、getであんまり検索したくない by jflute (2026/02/03)
             // https://jflute.hatenadiary.jp/entry/20151020/stopgetselect
             assertFalse(formalizedDatetime.isBefore(fromDate));
             assertFalse(formalizedDatetime.isAfter(toDatePlusOne));
@@ -383,11 +383,14 @@ public class HandsOn03Test extends UnitContainerTestCase {
         });
     }
 
-    // TODO jflute 次回1on1ここから (2026/02/03)
+    // done jflute 次回1on1ここから (2026/02/03)
     public void test_selectPurchaseInOneWeekFromFormalized() throws Exception {
         // ## Arrange ##
         adjustPurchase_PurchaseDatetime_fromFormalizedDatetimeInWeek();
         // moveToDayTerminal()のせいか！！！
+        // #1on1: 再びソースコードリーディングのコツ::漠然読みで構造把握して、当たりを付けて(時に逆読み)
+        // ログのリーディングでも繋がる話。
+        // 漠然読み大事。
         
         // ## Act ##
         ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
@@ -395,6 +398,19 @@ public class HandsOn03Test extends UnitContainerTestCase {
             cb.setupSelect_Member().withMemberSecurityAsOne();
             cb.setupSelect_Product().withProductStatus();
             cb.setupSelect_Product().withProductCategory().withProductCategorySelf();
+
+            // #1on1: 一週間以内という言葉の曖昧さ、両方のパターン (2026/02/18)
+            // 10/3                    10/10     10/11
+            //  13h                      0h  13h   0h
+            //   |                       |    |    |
+            //   |       D               | I  |    | P
+            // A |                       |H  J|L   |O
+            //   |C                  E   G    K    N
+            //   B                      F|    |   M|
+            //   |                       |         |
+            //
+            // TODO hase adjustのデータがヒットするように by jflute (2026/02/18)
+            // TODO hase fromの方を上に持ってきましょう by jflute (2026/02/18)
             cb.columnQuery(leftCb ->
                     leftCb.specify().columnPurchaseDatetime()
             ).lessEqual(rightCb ->
@@ -422,6 +438,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             log(member.getMemberName(), memberStatus.getMemberStatusName(), memberSecurity.getReminderQuestion());
             log(product.getProductName(), productStatus.getProductStatusName(), productCategory.getProductCategoryName(),
                     parentCategory.getProductCategoryName());
+            // TODO hase 主役級のカラムは変数に抽出して、大事なロジックのところを見やすくしよう by jflute (2026/02/18)
             log(purchase.getPurchaseDatetime(), member.getFormalizedDatetime());
 
             assertFalse(purchase.getPurchaseDatetime().isAfter(member.getFormalizedDatetime().plusDays(7)));
@@ -445,6 +462,11 @@ public class HandsOn03Test extends UnitContainerTestCase {
             cb.setupSelect_MemberStatus();
             cb.setupSelect_MemberSecurityAsOne();
             cb.setupSelect_MemberWithdrawalAsOne();
+            // #1on1: orScopeQuery()は汎用的なor, 一方で、FromToのorIsNull()はピンポイントのor
+            //cb.orScopeQuery(orCB -> {
+            //    orCB.query().setBirthdate_FromTo(null, targetDate, op -> op.compareAsYear());
+            //    orCB.query().setBirthdate_IsNull();
+            //});
             cb.query().setBirthdate_FromTo(null, targetDate, op -> op.compareAsYear().orIsNull());
             cb.query().addOrderBy_Birthdate_Desc().withNullsFirst();
         });
