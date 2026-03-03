@@ -410,8 +410,8 @@ public class HandsOn03Test extends UnitContainerTestCase {
             //   B                      F|    |   M|
             //   |                       |         |
             //
-            // TODO done hase adjustのデータがヒットするように by jflute (2026/02/18)
-            // TODO done hase fromの方を上に持ってきましょう by jflute (2026/02/18)
+            // done hase adjustのデータがヒットするように by jflute (2026/02/18)
+            // done hase fromの方を上に持ってきましょう by jflute (2026/02/18)
             cb.columnQuery(leftCb ->
                     leftCb.specify().columnPurchaseDatetime()
             ).greaterEqual(rightCb -> // 正式登録前も購入できるの知らなかった、log出して気づいた
@@ -423,6 +423,10 @@ public class HandsOn03Test extends UnitContainerTestCase {
                     rightCb.specify().specifyMember().columnFormalizedDatetime()
                             .convert(op -> op.truncTime().addDay(8))
             );
+            // #1on1: O/Rマッパーの代表的な役割、DBMSの方言を吸収する (2026/03/03)
+            // 可能な範囲でDBMSの方言を吸収したコードを書いていきたい。想定外のDBMS引越しが発生することもある。
+            // (時々、同じDBMSでもバージョンごとに違うとかもある...)
+            // ColumnQueryOptionの実装と動作確認の話。
         });
     
         // ## Assert ##
@@ -442,7 +446,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             log(member.getMemberName(), memberStatus.getMemberStatusName(), memberSecurity.getReminderQuestion());
             log(product.getProductName(), productStatus.getProductStatusName(), productCategory.getProductCategoryName(),
                     parentCategory.getProductCategoryName());
-            // TODO done hase 主役級のカラムは変数に抽出して、大事なロジックのところを見やすくしよう by jflute (2026/02/18)
+            // done hase 主役級のカラムは変数に抽出して、大事なロジックのところを見やすくしよう by jflute (2026/02/18)
             log(purchaseDatetime, formalizedDatetime);
 
             assertFalse(purchaseDatetime.isBefore(formalizedDatetime));
@@ -459,6 +463,21 @@ public class HandsOn03Test extends UnitContainerTestCase {
         String overDateStr = "1975/01/01";
         LocalDate limitDate = toLocalDate(limitDateStr);
         LocalDate overDate = toLocalDate(overDateStr);
+        // #1on1: ReplaceSchemaのテストデータはオーソドックスなもので、極端な値は自分で用意 (2026/03/03)
+        // UnitTestでDBにアクセスするか？mockにするか？話。
+        // DBにアクセスする方がDBの振る舞いも同時にテストできるけど、テストデータをちゃんと用意するハードルがある。
+        // mockにしても、ITテストの自動化とか、QAテストの充実化とか、別のところで担保できていればOK。
+        // TODO hase [読み物課題] モッククラスを使うべきか否か by jflute (2026/03/03)
+        // https://irof.hateblo.jp/entry/2019/07/17/233048
+        //
+        // #1on1: 開発にお金がある/ないでAorBも変わってくる話 (2026/03/03)
+        //
+        // TODO hase UnitTestとは言え、せめて1,4は変数化して役割を変数名で表現するといいかも by jflute (2026/03/03)
+        // #1on1: UnitTestでのベタ書き文化のさじ加減話 (グラデーションがある) (2026/03/03)
+        // ハンズオンのアサートも、logicalにアサートするのか？期待値ベタ指定でアサートするのか？
+        //
+        // #1on1: ネット上でのIT情報発信の歴史 (2026/03/03)
+        // 今はまた、物理のコミュニケーションが大事になってきた。
         adjustMember_Birthdate(1, limitDate);
         adjustMember_Birthdate(4, overDate);
 
