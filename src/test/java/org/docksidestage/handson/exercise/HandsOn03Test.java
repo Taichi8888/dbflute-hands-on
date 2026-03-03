@@ -2,6 +2,7 @@ package org.docksidestage.handson.exercise;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -409,18 +410,18 @@ public class HandsOn03Test extends UnitContainerTestCase {
             //   B                      F|    |   M|
             //   |                       |         |
             //
-            // TODO hase adjustのデータがヒットするように by jflute (2026/02/18)
-            // TODO hase fromの方を上に持ってきましょう by jflute (2026/02/18)
-            cb.columnQuery(leftCb ->
-                    leftCb.specify().columnPurchaseDatetime()
-            ).lessEqual(rightCb ->
-                    rightCb.specify().specifyMember().columnFormalizedDatetime()
-                            .convert(op -> op.addDay(7))
-            );
+            // TODO done hase adjustのデータがヒットするように by jflute (2026/02/18)
+            // TODO done hase fromの方を上に持ってきましょう by jflute (2026/02/18)
             cb.columnQuery(leftCb ->
                     leftCb.specify().columnPurchaseDatetime()
             ).greaterEqual(rightCb -> // 正式登録前も購入できるの知らなかった、log出して気づいた
                     rightCb.specify().specifyMember().columnFormalizedDatetime()
+            );
+            cb.columnQuery(leftCb ->
+                    leftCb.specify().columnPurchaseDatetime()
+            ).lessThan(rightCb ->
+                    rightCb.specify().specifyMember().columnFormalizedDatetime()
+                            .convert(op -> op.truncTime().addDay(8))
             );
         });
     
@@ -434,15 +435,18 @@ public class HandsOn03Test extends UnitContainerTestCase {
             ProductStatus productStatus = product.getProductStatus().get();
             ProductCategory productCategory = product.getProductCategory().get();
             ProductCategory parentCategory = productCategory.getProductCategorySelf().get();
+            LocalDateTime purchaseDatetime = purchase.getPurchaseDatetime();
+            LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
+            LocalDateTime formalizedDatetimePlusOneWeek = formalizedDatetime.truncatedTo(ChronoUnit.DAYS).plusDays(8);
 
             log(member.getMemberName(), memberStatus.getMemberStatusName(), memberSecurity.getReminderQuestion());
             log(product.getProductName(), productStatus.getProductStatusName(), productCategory.getProductCategoryName(),
                     parentCategory.getProductCategoryName());
-            // TODO hase 主役級のカラムは変数に抽出して、大事なロジックのところを見やすくしよう by jflute (2026/02/18)
-            log(purchase.getPurchaseDatetime(), member.getFormalizedDatetime());
+            // TODO done hase 主役級のカラムは変数に抽出して、大事なロジックのところを見やすくしよう by jflute (2026/02/18)
+            log(purchaseDatetime, formalizedDatetime);
 
-            assertFalse(purchase.getPurchaseDatetime().isAfter(member.getFormalizedDatetime().plusDays(7)));
-            assertFalse(purchase.getPurchaseDatetime().isBefore(member.getFormalizedDatetime()));
+            assertFalse(purchaseDatetime.isBefore(formalizedDatetime));
+            assertTrue(purchaseDatetime.isBefore(formalizedDatetimePlusOneWeek));
         });
     }
     
@@ -451,11 +455,12 @@ public class HandsOn03Test extends UnitContainerTestCase {
         String targetDateStr = "1974/01/01";
         LocalDate targetDate = toLocalDate(targetDateStr);
 
-        String okDateStr = "1974/12/31";
-        String ngDateStr = "1975/01/01";
-        LocalDate limitDate = toLocalDate(okDateStr);
-        LocalDate ngDate = toLocalDate(ngDateStr);
-        // TODO hase adjustメソッド作る？ by hase (2026/02/17)
+        String limitDateStr = "1974/12/31";
+        String overDateStr = "1975/01/01";
+        LocalDate limitDate = toLocalDate(limitDateStr);
+        LocalDate overDate = toLocalDate(overDateStr);
+        adjustMember_Birthdate(1, limitDate);
+        adjustMember_Birthdate(4, overDate);
 
         // ## Act ##
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
@@ -467,7 +472,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             //    orCB.query().setBirthdate_FromTo(null, targetDate, op -> op.compareAsYear());
             //    orCB.query().setBirthdate_IsNull();
             //});
-            cb.query().setBirthdate_FromTo(null, targetDate, op -> op.compareAsYear().orIsNull());
+            cb.query().setBirthdate_FromTo(null, targetDate, op -> op.compareAsYear().allowOneSide().orIsNull());
             cb.query().addOrderBy_Birthdate_Desc().withNullsFirst();
         });
 
@@ -482,14 +487,38 @@ public class HandsOn03Test extends UnitContainerTestCase {
 
             LocalDate birthdate = member.getBirthdate();
             if (birthdate != null) {
-                assertTrue(birthdate.isBefore(ngDate));
-            }
-            if (birthdate == limitDate) {
-                log("border line asserted correctly!!!" + member.getMemberName(), birthdate);
-                limitDateAppeared = true;
+                assertTrue(birthdate.isBefore(overDate));
+                if (birthdate.isEqual(limitDate)) {
+                    log("border line asserted correctly!!!" + member.getMemberName(), birthdate);
+                    limitDateAppeared = true;
+                }
             }
         }
-//        assertTrue(limitDateAppeared);
+        assertTrue(limitDateAppeared);
         assertNull(memberList.get(0).getBirthdate());
+        assertFalse(memberBhv.extractMemberIdList(memberList).contains(4));
+    }
+
+    private void adjustMember_Birthdate(Integer memberId, LocalDate birthdate) {
+        Member adjustMember = memberBhv.selectEntity(cb -> {
+            cb.query().setMemberId_Equal(memberId);
+        }).get();
+        adjustMember.setBirthdate(birthdate);
+        memberBhv.updateNonstrict(adjustMember);
+    }
+    
+    public void test_selectMemberFormalized200506AndBirthdateIsNull() throws Exception {
+        // ## Arrange ##
+        String targetDateStr = "2005/06/01";
+        LocalDateTime targetDateTime = toLocalDateTime(targetDateStr);
+        
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().setFormalizedDatetime_FromTo(targetDateTime, targetDateTime, op -> op.compareAsMonth());
+            cb.query().setBirthdate_IsNull();
+            cb.query().addOrderBy_MemberId_Desc();
+        });
+    
+        // ## Assert ##
     }
 }
