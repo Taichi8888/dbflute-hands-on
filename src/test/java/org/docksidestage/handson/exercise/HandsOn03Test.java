@@ -467,19 +467,21 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // UnitTestでDBにアクセスするか？mockにするか？話。
         // DBにアクセスする方がDBの振る舞いも同時にテストできるけど、テストデータをちゃんと用意するハードルがある。
         // mockにしても、ITテストの自動化とか、QAテストの充実化とか、別のところで担保できていればOK。
-        // TODO hase [読み物課題] モッククラスを使うべきか否か by jflute (2026/03/03)
+        // TODO done hase [読み物課題] モッククラスを使うべきか否か by jflute (2026/03/03)
         // https://irof.hateblo.jp/entry/2019/07/17/233048
         //
         // #1on1: 開発にお金がある/ないでAorBも変わってくる話 (2026/03/03)
         //
-        // TODO hase UnitTestとは言え、せめて1,4は変数化して役割を変数名で表現するといいかも by jflute (2026/03/03)
+        // TODO done hase UnitTestとは言え、せめて1,4は変数化して役割を変数名で表現するといいかも by jflute (2026/03/03)
         // #1on1: UnitTestでのベタ書き文化のさじ加減話 (グラデーションがある) (2026/03/03)
         // ハンズオンのアサートも、logicalにアサートするのか？期待値ベタ指定でアサートするのか？
         //
         // #1on1: ネット上でのIT情報発信の歴史 (2026/03/03)
         // 今はまた、物理のコミュニケーションが大事になってきた。
-        adjustMember_Birthdate(1, limitDate);
-        adjustMember_Birthdate(4, overDate);
+        Integer safeMemberId = 1;
+        Integer outMemberId = 4;
+        adjustMember_Birthdate(safeMemberId, limitDate);
+        adjustMember_Birthdate(outMemberId, overDate);
 
         // ## Act ##
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
@@ -515,7 +517,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
         }
         assertTrue(limitDateAppeared);
         assertNull(memberList.get(0).getBirthdate());
-        assertFalse(memberBhv.extractMemberIdList(memberList).contains(4));
+        assertFalse(memberBhv.extractMemberIdList(memberList).contains(outMemberId));
     }
 
     private void adjustMember_Birthdate(Integer memberId, LocalDate birthdate) {
@@ -533,11 +535,33 @@ public class HandsOn03Test extends UnitContainerTestCase {
         
         // ## Act ##
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
-            cb.query().setFormalizedDatetime_FromTo(targetDateTime, targetDateTime, op -> op.compareAsMonth());
             cb.query().setBirthdate_IsNull();
+            cb.query().addOrderBy_FormalizedDatetime_Asc().withManualOrder(op -> {
+                op.when_FromTo(targetDateTime, targetDateTime, op2 -> op2.compareAsMonth());
+            });
             cb.query().addOrderBy_MemberId_Desc();
         });
     
         // ## Assert ##
+        assertHasAnyElement(memberList);
+        boolean isFormalizedIn200506 = true;
+        boolean isOrderCorrectly = true;
+        for (Member member : memberList) {
+            assertNull(member.getBirthdate());
+            LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
+            boolean isTarget = formalizedDatetime != null
+                    && formalizedDatetime.getYear() == targetDateTime.getYear()
+                    && formalizedDatetime.getMonth() == targetDateTime.getMonth();
+            if (isFormalizedIn200506) {
+                if (!isTarget) {
+                    isFormalizedIn200506 = false;
+                }
+            } else {
+                if (isTarget) {
+                    isOrderCorrectly = false;
+                }
+            }
+        }
+        assertTrue(isOrderCorrectly);
     }
 }
