@@ -467,12 +467,12 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // UnitTestでDBにアクセスするか？mockにするか？話。
         // DBにアクセスする方がDBの振る舞いも同時にテストできるけど、テストデータをちゃんと用意するハードルがある。
         // mockにしても、ITテストの自動化とか、QAテストの充実化とか、別のところで担保できていればOK。
-        // TODO done hase [読み物課題] モッククラスを使うべきか否か by jflute (2026/03/03)
+        // done hase [読み物課題] モッククラスを使うべきか否か by jflute (2026/03/03)
         // https://irof.hateblo.jp/entry/2019/07/17/233048
         //
         // #1on1: 開発にお金がある/ないでAorBも変わってくる話 (2026/03/03)
         //
-        // TODO done hase UnitTestとは言え、せめて1,4は変数化して役割を変数名で表現するといいかも by jflute (2026/03/03)
+        // done hase UnitTestとは言え、せめて1,4は変数化して役割を変数名で表現するといいかも by jflute (2026/03/03)
         // #1on1: UnitTestでのベタ書き文化のさじ加減話 (グラデーションがある) (2026/03/03)
         // ハンズオンのアサートも、logicalにアサートするのか？期待値ベタ指定でアサートするのか？
         //
@@ -534,9 +534,13 @@ public class HandsOn03Test extends UnitContainerTestCase {
         LocalDateTime targetDateTime = toLocalDateTime(targetDateStr);
         
         // ## Act ##
+        // #1on1: FromToOptionの仕組み、少しだけコードリーディング (2026/03/27)
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.query().setBirthdate_IsNull();
+            // #1on1: ManualOrderの実際の活躍のお話 (実務でもけっこう使ってた) (2026/03/27)
             cb.query().addOrderBy_FormalizedDatetime_Asc().withManualOrder(op -> {
+                // TODO hase op2だとさすがに意味が伝わらなさすぎと、opと使い間違える可能性もあるので... by jflute (2026/03/27)
+                // e.g. fromToOp とか、内側だけはきっちり名前を付けて、文字数的にも区別が付きやすいように。
                 op.when_FromTo(targetDateTime, targetDateTime, op2 -> op2.compareAsMonth());
             });
             cb.query().addOrderBy_MemberId_Desc();
@@ -544,11 +548,28 @@ public class HandsOn03Test extends UnitContainerTestCase {
     
         // ## Assert ##
         assertHasAnyElement(memberList);
+
+        // TODO hase boolean, できればfalseからtrueにしたい!? by jflute (2026/03/27)
+        // TODO hase is...200506 だと、もっかい6月来たらtrueに戻る印象 by jflute (2026/03/27)
+        // なので、状態を正確に示すのであれば変数名を e.g. isFormalizedInFirstScope200506
+        // もしくは、ちゃんと true にしておくとか...
+        // つまり今の実装は、状態に見える変数だけど「6月を通り過ぎたかどうか？」をイベントの結果(印)を示してるとも言える。
         boolean isFormalizedIn200506 = true;
+
+        // TODO hase e.g. foundBadOrder by jflute (2026/03/27)
         boolean isOrderCorrectly = true;
+
+        // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+        // #1on1: booleanは、状態なのか？(isIn6) / イベントなのか？(passedBorder) 大きく二つ (2026/03/27)
+        //
+        // // なんとかフラグというboolean変数名
+        // https://jflute.hatenadiary.jp/entry/20181013/flgornuance
+        // _/_/_/_/_/_/_/_/
+
         for (Member member : memberList) {
             assertNull(member.getBirthdate());
             LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
+            // TODO hase isFormalizedIn200506があるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
             boolean isTarget = formalizedDatetime != null
                     && formalizedDatetime.getYear() == targetDateTime.getYear()
                     && formalizedDatetime.getMonth() == targetDateTime.getMonth();
