@@ -3,6 +3,7 @@ package org.docksidestage.handson.exercise;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
+import org.dbflute.cbean.result.PagingResultBean;
 import org.dbflute.exception.NonSpecifiedColumnAccessException;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.MemberSecurityBhv;
@@ -539,9 +541,9 @@ public class HandsOn03Test extends UnitContainerTestCase {
             cb.query().setBirthdate_IsNull();
             // #1on1: ManualOrderの実際の活躍のお話 (実務でもけっこう使ってた) (2026/03/27)
             cb.query().addOrderBy_FormalizedDatetime_Asc().withManualOrder(op -> {
-                // TODO hase op2だとさすがに意味が伝わらなさすぎと、opと使い間違える可能性もあるので... by jflute (2026/03/27)
+                // TODO done hase op2だとさすがに意味が伝わらなさすぎと、opと使い間違える可能性もあるので... by jflute (2026/03/27)
                 // e.g. fromToOp とか、内側だけはきっちり名前を付けて、文字数的にも区別が付きやすいように。
-                op.when_FromTo(targetDateTime, targetDateTime, op2 -> op2.compareAsMonth());
+                op.when_FromTo(targetDateTime, targetDateTime, fromToOp -> fromToOp.compareAsMonth());
             });
             cb.query().addOrderBy_MemberId_Desc();
         });
@@ -549,15 +551,15 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // ## Assert ##
         assertHasAnyElement(memberList);
 
-        // TODO hase boolean, できればfalseからtrueにしたい!? by jflute (2026/03/27)
-        // TODO hase is...200506 だと、もっかい6月来たらtrueに戻る印象 by jflute (2026/03/27)
+        // TODO done hase boolean, できればfalseからtrueにしたい!? by jflute (2026/03/27)
+        // TODO done hase is...200506 だと、もっかい6月来たらtrueに戻る印象 by jflute (2026/03/27)
         // なので、状態を正確に示すのであれば変数名を e.g. isFormalizedInFirstScope200506
         // もしくは、ちゃんと true にしておくとか...
         // つまり今の実装は、状態に見える変数だけど「6月を通り過ぎたかどうか？」をイベントの結果(印)を示してるとも言える。
-        boolean isFormalizedIn200506 = true;
+        boolean passedLast200506FormalizeMember = false;
 
-        // TODO hase e.g. foundBadOrder by jflute (2026/03/27)
-        boolean isOrderCorrectly = true;
+        // TODO done hase e.g. foundBadOrder by jflute (2026/03/27)
+        boolean foundBadOrder = false;
 
         // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
         // #1on1: booleanは、状態なのか？(isIn6) / イベントなのか？(passedBorder) 大きく二つ (2026/03/27)
@@ -569,20 +571,50 @@ public class HandsOn03Test extends UnitContainerTestCase {
         for (Member member : memberList) {
             assertNull(member.getBirthdate());
             LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
-            // TODO hase isFormalizedIn200506があるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
+            // TODO done hase isFormalizedIn200506があるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
             boolean isTarget = formalizedDatetime != null
                     && formalizedDatetime.getYear() == targetDateTime.getYear()
                     && formalizedDatetime.getMonth() == targetDateTime.getMonth();
-            if (isFormalizedIn200506) {
+            if (!passedLast200506FormalizeMember) {
                 if (!isTarget) {
-                    isFormalizedIn200506 = false;
+                    passedLast200506FormalizeMember = true;
                 }
             } else {
                 if (isTarget) {
-                    isOrderCorrectly = false;
+                    foundBadOrder = true;
                 }
             }
         }
-        assertTrue(isOrderCorrectly);
+        assertFalse(foundBadOrder);
+    }
+
+    public void test_pagingAllMember() throws Exception {
+        // ## Arrange ##
+        int pageSize = 3;
+        int pageNumber = 1;
+
+        // ## Act ##
+        PagingResultBean<Member> page = memberBhv.selectPage(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.query().addOrderBy_MemberId_Asc();
+            cb.paging(pageSize, pageNumber);
+        });
+
+        // ## Assert ##
+        assertHasAnyElement(page);
+        int allCount = page.getAllRecordCount();
+        int allPageCount = page.getAllPageCount();
+        for (Member member : page) {
+            MemberStatus status = member.getMemberStatus().get();
+            String memberStatusName = status.getMemberStatusName();
+            log(member.getMemberId(), member.getMemberName(), memberStatusName);
+        }
+        assertEquals(allCount, memberBhv.selectCount(cb -> {}));
+        assertEquals(allPageCount, allCount / pageSize + (allCount % pageSize > 0 ? 1 : 0));
+        assertEquals(pageSize, page.size());
+        assertEquals(pageNumber, page.getCurrentPageNumber());
+        assertEquals(page.pageRange(op -> op.rangeSize(3)).createPageNumberList(), Arrays.asList(1, 2, 3,4));
+        assertFalse(page.existsPreviousPage());
+        assertTrue(page.existsNextPage());
     }
 }
