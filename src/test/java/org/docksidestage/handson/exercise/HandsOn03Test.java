@@ -541,7 +541,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
             cb.query().setBirthdate_IsNull();
             // #1on1: ManualOrderの実際の活躍のお話 (実務でもけっこう使ってた) (2026/03/27)
             cb.query().addOrderBy_FormalizedDatetime_Asc().withManualOrder(op -> {
-                // TODO done hase op2だとさすがに意味が伝わらなさすぎと、opと使い間違える可能性もあるので... by jflute (2026/03/27)
+                // done hase op2だとさすがに意味が伝わらなさすぎと、opと使い間違える可能性もあるので... by jflute (2026/03/27)
                 // e.g. fromToOp とか、内側だけはきっちり名前を付けて、文字数的にも区別が付きやすいように。
                 op.when_FromTo(targetDateTime, targetDateTime, fromToOp -> fromToOp.compareAsMonth());
             });
@@ -551,14 +551,14 @@ public class HandsOn03Test extends UnitContainerTestCase {
         // ## Assert ##
         assertHasAnyElement(memberList);
 
-        // TODO done hase boolean, できればfalseからtrueにしたい!? by jflute (2026/03/27)
-        // TODO done hase is...200506 だと、もっかい6月来たらtrueに戻る印象 by jflute (2026/03/27)
+        // done hase boolean, できればfalseからtrueにしたい!? by jflute (2026/03/27)
+        // done hase is...200506 だと、もっかい6月来たらtrueに戻る印象 by jflute (2026/03/27)
         // なので、状態を正確に示すのであれば変数名を e.g. isFormalizedInFirstScope200506
         // もしくは、ちゃんと true にしておくとか...
         // つまり今の実装は、状態に見える変数だけど「6月を通り過ぎたかどうか？」をイベントの結果(印)を示してるとも言える。
         boolean passedLast200506FormalizeMember = false;
 
-        // TODO done hase e.g. foundBadOrder by jflute (2026/03/27)
+        // done hase e.g. foundBadOrder by jflute (2026/03/27)
         boolean foundBadOrder = false;
 
         // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -571,7 +571,8 @@ public class HandsOn03Test extends UnitContainerTestCase {
         for (Member member : memberList) {
             assertNull(member.getBirthdate());
             LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
-            // TODO done hase isFormalizedIn200506があるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
+            // TODO hase passedLast200506FormalizeMemberがあるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
+            // #1on1: テストコードのベタ指向のお話 (若干現場によるけど) (2026/04/02)
             boolean isTarget = formalizedDatetime != null
                     && formalizedDatetime.getYear() == targetDateTime.getYear()
                     && formalizedDatetime.getMonth() == targetDateTime.getMonth();
@@ -594,6 +595,9 @@ public class HandsOn03Test extends UnitContainerTestCase {
         int pageNumber = 1;
 
         // ## Act ##
+        // #1on1: ページング検索のお話がっつり (2026/04/02)
+        // MySQLの場合はfound_rows()
+        // ついでにカーソル検索の仕組みも。
         PagingResultBean<Member> page = memberBhv.selectPage(cb -> {
             cb.setupSelect_MemberStatus();
             cb.query().addOrderBy_MemberId_Asc();
@@ -620,6 +624,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
     
     public void test_cursorSearchOrderMemberByDisplayOrder() throws Exception {
         // ## Arrange ##
+        // #1on1: カーソル検索の話もがっつり (2026/04/02)
         Set<String> statusSet = new java.util.HashSet<>();
         String[] previous = new String[1];
         
