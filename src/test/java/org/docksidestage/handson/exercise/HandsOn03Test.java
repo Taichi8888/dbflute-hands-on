@@ -617,4 +617,25 @@ public class HandsOn03Test extends UnitContainerTestCase {
         assertFalse(page.existsPreviousPage());
         assertTrue(page.existsNextPage());
     }
+    
+    public void test_cursorSearchOrderMemberByDisplayOrder() throws Exception {
+        // ## Arrange ##
+        Set<String> statusSet = new java.util.HashSet<>();
+        String[] previous = new String[1];
+        
+        // ## Act ##
+        memberBhv.selectCursor(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.query().queryMemberStatus().addOrderBy_DisplayOrder_Asc();
+            cb.query().addOrderBy_MemberId_Desc();
+        }, member -> { // ## Assert ##
+            assertTrue(member.getMemberStatus().isPresent());
+            String current = member.getMemberStatus().get().getMemberStatusCode();
+            if (!current.equals(previous[0])) {
+                assertFalse(statusSet.contains(current));
+            }
+            statusSet.add(current);
+            previous[0] = current;
+        });
+    }
 }
