@@ -571,17 +571,17 @@ public class HandsOn03Test extends UnitContainerTestCase {
         for (Member member : memberList) {
             assertNull(member.getBirthdate());
             LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
-            // TODO hase passedLast200506FormalizeMemberがあるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
+            // TODO done hase passedLast200506FormalizeMemberがあるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
             // #1on1: テストコードのベタ指向のお話 (若干現場によるけど) (2026/04/02)
-            boolean isTarget = formalizedDatetime != null
+            boolean is200506FormalizeMember = formalizedDatetime != null
                     && formalizedDatetime.getYear() == targetDateTime.getYear()
                     && formalizedDatetime.getMonth() == targetDateTime.getMonth();
             if (!passedLast200506FormalizeMember) {
-                if (!isTarget) {
+                if (!is200506FormalizeMember) {
                     passedLast200506FormalizeMember = true;
                 }
             } else {
-                if (isTarget) {
+                if (is200506FormalizeMember) {
                     foundBadOrder = true;
                 }
             }
@@ -642,5 +642,10 @@ public class HandsOn03Test extends UnitContainerTestCase {
             statusSet.add(current);
             previous[0] = current;
         });
+    }
+
+    public void test_innerJoinAutoDetect() throws Exception {
+        test_selectMemberFormalizedFrom20051001To20051003();
+        // FKかつNOTNULLのカラムは、setupSelectしなくても、inner joinで自動的に探しにいってくれる。
     }
 }
