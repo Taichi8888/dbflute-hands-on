@@ -41,6 +41,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
         ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
             cb.setupSelect_Member().withMemberStatus();
             cb.setupSelect_Product();
+            // TODO hase MEMBERテーブルがMEMBER_STATUS_CODEもってるから、queryMemberStatus()なくていい by jflute (2026/04/26)
             cb.query().queryMember().queryMemberStatus().setMemberStatusCode_Equal(statusCdWithdrawal);
             cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
             cb.query().addOrderBy_PurchaseDatetime_Desc();
