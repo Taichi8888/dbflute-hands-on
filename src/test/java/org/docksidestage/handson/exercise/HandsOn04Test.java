@@ -32,17 +32,18 @@ public class HandsOn04Test extends UnitContainerTestCase {
     @Resource
     private MemberBhv memberBhv;
 
-    public void test_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
+    public void test_beta_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
         // ## Arrange ##
         String statusCdWithdrawal = "WDL";
         int paymentNotCompleted = 0;
 
         // ## Act ##
         ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
-            cb.setupSelect_Member().withMemberStatus();
+            cb.setupSelect_Member();
             cb.setupSelect_Product();
-            // TODO hase MEMBERテーブルがMEMBER_STATUS_CODEもってるから、queryMemberStatus()なくていい by jflute (2026/04/26)
-            cb.query().queryMember().queryMemberStatus().setMemberStatusCode_Equal(statusCdWithdrawal);
+            // TODO done hase MEMBERテーブルがMEMBER_STATUS_CODEもってるから、queryMemberStatus()なくていい by jflute (2026/04/26)
+//            cb.query().queryMember().queryMemberStatus().setMemberStatusCode_Equal(statusCdWithdrawal);
+            cb.query().queryMember().setMemberStatusCode_Equal(statusCdWithdrawal);
             cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
             cb.query().addOrderBy_PurchaseDatetime_Desc();
         });
@@ -57,7 +58,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
         });
     }
     
-    public void test_selectMemberWithWithdrawal() throws Exception {
+    public void test__beta_selectMemberWithWithdrawal() throws Exception {
         // ## Arrange ##
 
         // ## Act ##
@@ -79,6 +80,30 @@ public class HandsOn04Test extends UnitContainerTestCase {
                     assertFalse(member.getMemberWithdrawalAsOne().isPresent());
                 }
             });
+        });
+    }
+
+    public void test_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
+        // ## Arrange ##
+        String statusCdWithdrawal = "WDL";
+        int paymentNotCompleted = 0;
+
+        // ## Act ##
+        ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
+            cb.setupSelect_Member();
+            cb.setupSelect_Product();
+            cb.query().queryMember().setMemberStatusCode_Equal(statusCdWithdrawal);
+            cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
+            cb.query().addOrderBy_PurchaseDatetime_Desc();
+        });
+
+        // ## Assert ##
+        assertHasAnyElement(purchaseList);
+        purchaseList.forEach(purchase -> {
+            String memberName = purchase.getMember().get().getMemberName();
+            String productName = purchase.getProduct().get().getProductName();
+            log(memberName, productName);
+            assertEquals(paymentNotCompleted, purchase.getPaymentCompleteFlg());
         });
     }
 }
