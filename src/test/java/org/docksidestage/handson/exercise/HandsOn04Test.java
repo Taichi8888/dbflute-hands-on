@@ -3,6 +3,7 @@ package org.docksidestage.handson.exercise;
 import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
+import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
 import org.docksidestage.handson.dbflute.exentity.Member;
@@ -43,8 +44,10 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_Product();
             // done hase MEMBERテーブルがMEMBER_STATUS_CODEもってるから、queryMemberStatus()なくていい by jflute (2026/04/26)
             // cb.query().queryMember().queryMemberStatus().setMemberStatusCode_Equal(statusCdWithdrawal);
-            cb.query().queryMember().setMemberStatusCode_Equal(statusCdWithdrawal);
-            cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
+// 区分値定義追加でコンパイルエラーになったのでコメントアウト by hase（2026/5/7）
+            //            cb.query().queryMember().setMemberStatusCode_Equal(statusCdWithdrawal);
+            //            cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
+//
             cb.query().addOrderBy_PurchaseDatetime_Desc();
         });
 
@@ -58,7 +61,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
         });
     }
 
-    public void test__beta_selectMemberWithWithdrawal() throws Exception {
+    public void test_beta_selectMemberWithWithdrawal() throws Exception {
         // ## Arrange ##
 
         // ## Act ##
@@ -89,7 +92,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // 一方で、みんながフォーマッターを使わなければまた成立しない。
         // フォーマッターを掛ける人と掛けない人が混ざると、プルリクで大差分になっちゃう。
         // やるなら、みんな基本的には常に必ずフォーマッターを掛ける、じゃないと成り立たない。
-        // 
+        //
         // Eclipseの場合、Save Actions で command+S (保存) のときに自動フォーマットできる。
         // その設定自体をgitコミットすれば良いだけ。
         //
@@ -99,7 +102,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ただ、IntelliJは自動保存文化なので、command+S押さない人がいるので、それも成り立ちにくい。
         //
         // #1on1: IDEの違い、言語エンジンの話、開発組織の話 (2026/05/01)
-        // 
+        //
         assertHasAnyElement(memberList);
         boolean hasAnyWithdrawal =
                 memberList.stream().anyMatch(member -> member.getMemberStatus().get().getMemberStatusCode().equals("WDL"));
@@ -118,15 +121,13 @@ public class HandsOn04Test extends UnitContainerTestCase {
 
     public void test_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
         // ## Arrange ##
-        String statusCdWithdrawal = "WDL";
-        int paymentNotCompleted = 0;
 
         // ## Act ##
         ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
             cb.setupSelect_Member();
             cb.setupSelect_Product();
-            cb.query().queryMember().setMemberStatusCode_Equal(statusCdWithdrawal);
-            cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
+            cb.query().queryMember().setMemberStatusCode_Equal_退会会員();
+            cb.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.False);
             cb.query().addOrderBy_PurchaseDatetime_Desc();
         });
 
@@ -136,7 +137,33 @@ public class HandsOn04Test extends UnitContainerTestCase {
             String memberName = purchase.getMember().get().getMemberName();
             String productName = purchase.getProduct().get().getProductName();
             log(memberName, productName);
-            assertEquals(paymentNotCompleted, purchase.getPaymentCompleteFlg());
+            assertTrue(purchase.getMember().get().isMemberStatusCode退会会員());
+            assertTrue(purchase.isPaymentCompleteFlgFalse());
+        });
+    }
+
+    public void test_selectMemberWithWithdrawal() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.setupSelect_MemberWithdrawalAsOne();
+        });
+
+        // ## Assert ##
+
+        assertHasAnyElement(memberList);
+        boolean hasAnyWithdrawal =
+                memberList.stream().anyMatch(member -> member.isMemberStatusCode退会会員());
+        assertTrue(hasAnyWithdrawal);
+
+        memberList.forEach(member -> {
+            if (member.isMemberStatusCode退会会員()) {
+                assertTrue(member.getMemberWithdrawalAsOne().isPresent());
+            } else {
+                assertFalse(member.getMemberWithdrawalAsOne().isPresent());
+            }
         });
     }
 }
