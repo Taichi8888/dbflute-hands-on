@@ -42,7 +42,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_Member();
             cb.setupSelect_Product();
             // done hase MEMBERテーブルがMEMBER_STATUS_CODEもってるから、queryMemberStatus()なくていい by jflute (2026/04/26)
-//            cb.query().queryMember().queryMemberStatus().setMemberStatusCode_Equal(statusCdWithdrawal);
+            // cb.query().queryMember().queryMemberStatus().setMemberStatusCode_Equal(statusCdWithdrawal);
             cb.query().queryMember().setMemberStatusCode_Equal(statusCdWithdrawal);
             cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
             cb.query().addOrderBy_PurchaseDatetime_Desc();
@@ -57,7 +57,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             assertEquals(paymentNotCompleted, purchase.getPaymentCompleteFlg());
         });
     }
-    
+
     public void test__beta_selectMemberWithWithdrawal() throws Exception {
         // ## Arrange ##
 
@@ -66,7 +66,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_MemberStatus();
             cb.setupSelect_MemberWithdrawalAsOne();
         });
-    
+
         // ## Assert ##
         // #1on1: コードの横幅話。(2026/05/01)
         // 昔は、印刷幅で80の慣習があった。けど、もう印刷しないので...80は狭い。
@@ -101,7 +101,8 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // #1on1: IDEの違い、言語エンジンの話、開発組織の話 (2026/05/01)
         // 
         assertHasAnyElement(memberList);
-        boolean hasAnyWithdrawal = memberList.stream().anyMatch(member -> member.getMemberStatus().get().getMemberStatusCode().equals("WDL"));
+        boolean hasAnyWithdrawal =
+                memberList.stream().anyMatch(member -> member.getMemberStatus().get().getMemberStatusCode().equals("WDL"));
         assertTrue(hasAnyWithdrawal);
 
         memberList.forEach(member -> {
