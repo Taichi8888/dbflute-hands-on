@@ -166,4 +166,23 @@ public class HandsOn04Test extends UnitContainerTestCase {
             }
         });
     }
+
+    public void test_selectMemberYoungestProvisional() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        Member member = memberBhv.selectEntity(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.specify().specifyMemberStatus().columnMemberStatusName();
+            cb.query().setMemberStatusCode_Equal_仮会員();
+            cb.query().addOrderBy_Birthdate_Desc();
+            cb.fetchFirst(1);
+        }).get();
+
+        // ## Assert ##
+        log(member.getMemberName(), member.getBirthdate(), member.getMemberStatus().get().getMemberStatusName());
+        assertTrue(member.isMemberStatusCode仮会員());
+    }
+
+
 }
