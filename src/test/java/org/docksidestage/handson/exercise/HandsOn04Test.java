@@ -11,6 +11,8 @@ import org.docksidestage.handson.dbflute.exentity.Member;
 import org.docksidestage.handson.dbflute.exentity.Purchase;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
+// #1on1: dfpropの$sqlのお話。自己参照の階層構造になってるようなものに使える (2026/05/08)
+// #1on1: アプリ区分値のお話。ロジック区分値とも言う (2026/05/08)
 /**
  * セクション4のテストクラス
  * <ul>
