@@ -59,6 +59,20 @@ public class HandsOn03Test extends UnitContainerTestCase {
     @Resource
     private PurchaseBhv purchaseBhv;
 
+ // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+ // TODO hase こんな感じで、スクロールしたときのクラスの見通しよくしてみましょう。タグコメントと言います by jflute (2026/05/08)
+ // ===================================================================================
+ //                                                                      Silverストレッチ
+ //                                                                      ==============
+ // 例えば、こちらのクラスを見てみてください。
+ // https://github.com/lastaflute/lastaflute-example-harbor/blob/master/src/main/java/org/docksidestage/app/web/product/ProductListAction.java
+ // https://github.com/lastaflute/lastaflute-example-harbor/blob/master/src/main/java/org/docksidestage/app/web/signup/SignupAction.java
+ // ハンズオンでも実務でも、クラスのメンバー (フィールドやメソッド) の業務的なまとまりを意識してクラス作りをして頂けると嬉しいです。
+ // _ta で補完できます。特に大きなクラスでは、カテゴリごとに定義をまとめる習慣を付けていきましょう。
+ // 別に、一タグコメント、一メソッドじゃなくてもOKです。まとまった単位で付けていくとよいでしょう。
+ // ちなみに、インスタンス変数は、オブジェクト指向の "属性" ということで、Attribute。これは _taattr で用意されています。
+ // _/_/_/_/_/_/_/_/_/_/
+
     public void test_selectMemberStartsWithSBornBefore1968() throws Exception {
         // ## Arrange ##
         String prefix = "S";

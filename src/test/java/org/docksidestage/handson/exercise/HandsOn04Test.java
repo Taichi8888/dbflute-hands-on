@@ -3,6 +3,7 @@ package org.docksidestage.handson.exercise;
 import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
+import org.dbflute.jdbc.ClassificationUndefinedHandlingType;
 import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
@@ -33,6 +34,8 @@ public class HandsOn04Test extends UnitContainerTestCase {
     @Resource
     private MemberBhv memberBhv;
 
+    // TODO hase タグコメントをちょっと入れてみてください by jflute (2026/05/08)
+    
     public void test_beta_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
         // ## Arrange ##
         String statusCdWithdrawal = "WDL";
@@ -127,6 +130,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_Member();
             cb.setupSelect_Product();
             cb.query().queryMember().setMemberStatusCode_Equal_退会会員();
+            // TODO hase falseのメソッドがあるのでそっちを by jflute (2026/05/08)
             cb.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.False);
             cb.query().addOrderBy_PurchaseDatetime_Desc();
         });
@@ -172,17 +176,28 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Arrange ##
 
         // ## Act ##
+        // #1on1: 同率首位がいることを想定できてるのGood (2026/05/08)
+        // 現状の実装だと、ランダムで1件を特定している。
+        // もう一個は、同率首位をみんな取得する。
         Member member = memberBhv.selectEntity(cb -> {
             cb.setupSelect_MemberStatus();
             cb.specify().specifyMemberStatus().columnMemberStatusName();
             cb.query().setMemberStatusCode_Equal_仮会員();
+            // TODO hase 第二ソートキーでfetch1を固定化した方が良い by jflute (2026/05/08)
+            //  Aさん 2026/05/08
+            //  Bさん 2026/05/08
+            // いまこの二人をどう並べるかは指定されていないので、論理的にはランダムになる。
+            // すると、検索するたびに、AさんだったりBさんだったりブレる可能性がある。
+            // なので、要件にはないけど、第二ソートキーでユニークに並べるようにした方がいい。
             cb.query().addOrderBy_Birthdate_Desc();
             cb.fetchFirst(1);
         }).get();
-
+        
         // ## Assert ##
         log(member.getMemberName(), member.getBirthdate(), member.getMemberStatus().get().getMemberStatusName());
         assertTrue(member.isMemberStatusCode仮会員());
+        
+        // TODO hase ちょっと同率首位を検索するのも以下に追加で書いてみましょう by jflute (2026/05/08)
     }
 
     public void test_selectPurchaseByYoungestFormalizedMember() throws Exception {
@@ -190,6 +205,10 @@ public class HandsOn04Test extends UnitContainerTestCase {
 
 
         // ## Act ##
+        // #1on1: 一応、できてる。支払い済み購入が存在する会員の中で一番若い人を取ってるので合ってる (2026/05/08)
+        // TODO hase DBFluteの機能を使ってSQLを一回で済ませたい。 by jflute (2026/05/08)
+        // (現状の実装は、これはこれで思い出として残して)
+        // (先に、仮会員の同率首位をみんな検索するやつを先にやってみた方が良い)
         Member youngestMember = purchaseBhv.selectEntity(cb -> {
             cb.setupSelect_Member();
             cb.query().setPaymentCompleteFlg_Equal_True();

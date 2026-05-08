@@ -713,7 +713,7 @@ public interface CDef extends Classification {
         /** 支払方法 */
         PaymentMethod(cd -> CDef.PaymentMethod.of(cd), nm -> CDef.PaymentMethod.byName(nm)
         , () -> CDef.PaymentMethod.listAll(), gp -> CDef.PaymentMethod.listByGroup(gp)
-        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.EXCEPTION);
+        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.LOGGING);
 
         private static final Map<String, DefMeta> _nameMetaMap = new HashMap<>();
         static {
