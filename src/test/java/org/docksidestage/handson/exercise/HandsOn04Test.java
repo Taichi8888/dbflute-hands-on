@@ -134,10 +134,11 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Assert ##
         assertHasAnyElement(purchaseList);
         purchaseList.forEach(purchase -> {
-            String memberName = purchase.getMember().get().getMemberName();
+            Member member = purchase.getMember().get();
+            String memberName = member.getMemberName();
             String productName = purchase.getProduct().get().getProductName();
             log(memberName, productName);
-            assertTrue(purchase.getMember().get().isMemberStatusCode退会会員());
+            assertTrue(member.isMemberStatusCode退会会員());
             assertTrue(purchase.isPaymentCompleteFlgFalse());
         });
     }
@@ -184,5 +185,33 @@ public class HandsOn04Test extends UnitContainerTestCase {
         assertTrue(member.isMemberStatusCode仮会員());
     }
 
+    public void test_selectPurchaseByYoungestFormalizedMember() throws Exception {
+        // ## Arrange ##
 
+
+        // ## Act ##
+        Member youngestMember = purchaseBhv.selectEntity(cb -> {
+            cb.setupSelect_Member();
+            cb.query().setPaymentCompleteFlg_Equal_True();
+            cb.query().queryMember().setMemberStatusCode_Equal_正式会員();
+            cb.query().queryMember().addOrderBy_Birthdate_Desc();
+            cb.fetchFirst(1);
+        }).get().getMember().get();
+
+        ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
+            cb.setupSelect_Member().withMemberStatus();
+            cb.specify().specifyMember().specifyMemberStatus().columnMemberStatusName();
+            cb.query().queryMember().setMemberId_Equal(youngestMember.getMemberId());
+            cb.query().setPaymentCompleteFlg_Equal_True();
+            cb.query().addOrderBy_PurchaseDatetime_Desc();
+        });
+
+        // ## Assert ##
+        assertHasAnyElement(purchaseList);
+        purchaseList.forEach(purchase -> {
+            Member member = purchase.getMember().get();
+            log(member.getMemberName(), member.getMemberStatus().get().getMemberStatusName(), purchase.getPurchaseDatetime());
+            assertTrue(member.isMemberStatusCode正式会員());
+        });
+    }
 }
