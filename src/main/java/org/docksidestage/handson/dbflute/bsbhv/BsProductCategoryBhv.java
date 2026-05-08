@@ -13,6 +13,7 @@ import org.dbflute.cbean.result.*;
 import org.dbflute.exception.*;
 import org.dbflute.optional.OptionalEntity;
 import org.dbflute.outsidesql.executor.*;
+import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exbhv.*;
 import org.docksidestage.handson.dbflute.bsbhv.loader.*;
 import org.docksidestage.handson.dbflute.exentity.*;
@@ -129,29 +130,29 @@ public abstract class BsProductCategoryBhv extends AbstractBehaviorWritable<Prod
 
     /**
      * Select the entity by the primary-key value.
-     * @param productCategoryCode : PK, NotNull, CHAR(3). (NotNull)
+     * @param productCategoryCode : PK, NotNull, CHAR(3), classification=ProductCategory. (NotNull)
      * @return The optional entity selected by the PK. (NotNull: if no data, empty entity)
      * @throws EntityAlreadyDeletedException When get(), required() of return value is called and the value is null, which means entity has already been deleted (not found).
      * @throws EntityDuplicatedException When the entity has been duplicated.
      * @throws SelectEntityConditionNotFoundException When the condition for selecting an entity is not found.
      */
-    public OptionalEntity<ProductCategory> selectByPK(String productCategoryCode) {
+    public OptionalEntity<ProductCategory> selectByPK(CDef.ProductCategory productCategoryCode) {
         return facadeSelectByPK(productCategoryCode);
     }
 
-    protected OptionalEntity<ProductCategory> facadeSelectByPK(String productCategoryCode) {
+    protected OptionalEntity<ProductCategory> facadeSelectByPK(CDef.ProductCategory productCategoryCode) {
         return doSelectOptionalByPK(productCategoryCode, typeOfSelectedEntity());
     }
 
-    protected <ENTITY extends ProductCategory> ENTITY doSelectByPK(String productCategoryCode, Class<? extends ENTITY> tp) {
+    protected <ENTITY extends ProductCategory> ENTITY doSelectByPK(CDef.ProductCategory productCategoryCode, Class<? extends ENTITY> tp) {
         return doSelectEntity(xprepareCBAsPK(productCategoryCode), tp);
     }
 
-    protected <ENTITY extends ProductCategory> OptionalEntity<ENTITY> doSelectOptionalByPK(String productCategoryCode, Class<? extends ENTITY> tp) {
+    protected <ENTITY extends ProductCategory> OptionalEntity<ENTITY> doSelectOptionalByPK(CDef.ProductCategory productCategoryCode, Class<? extends ENTITY> tp) {
         return createOptionalEntity(doSelectByPK(productCategoryCode, tp), productCategoryCode);
     }
 
-    protected ProductCategoryCB xprepareCBAsPK(String productCategoryCode) {
+    protected ProductCategoryCB xprepareCBAsPK(CDef.ProductCategory productCategoryCode) {
         assertObjectNotNull("productCategoryCode", productCategoryCode);
         return newConditionBean().acceptPK(productCategoryCode);
     }

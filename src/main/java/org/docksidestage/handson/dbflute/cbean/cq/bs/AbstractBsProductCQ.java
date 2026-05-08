@@ -517,11 +517,61 @@ public abstract class AbstractBsProductCQ extends AbstractConditionQuery {
 
     /**
      * Equal(=). And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory}
      * @param productCategoryCode The value of productCategoryCode as equal. (basically NotNull, NotEmpty: error as default, or no condition as option)
      */
-    public void setProductCategoryCode_Equal(String productCategoryCode) {
+    protected void setProductCategoryCode_Equal(String productCategoryCode) {
         doSetProductCategoryCode_Equal(fRES(productCategoryCode));
+    }
+
+    /**
+     * Equal(=). As ProductCategory. And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
+     * 商品のカテゴリ。階層構造である
+     * @param cdef The instance of classification definition (as ENUM type). (basically NotNull: error as default, or no condition as option)
+     */
+    public void setProductCategoryCode_Equal_AsProductCategory(CDef.ProductCategory cdef) {
+        doSetProductCategoryCode_Equal(cdef != null ? cdef.code() : null);
+    }
+
+    /**
+     * Equal(=). As 食品 (FOD). And OnlyOnceRegistered. <br>
+     * 食品
+     */
+    public void setProductCategoryCode_Equal_食品() {
+        setProductCategoryCode_Equal_AsProductCategory(CDef.ProductCategory.食品);
+    }
+
+    /**
+     * Equal(=). As 音楽 (MSC). And OnlyOnceRegistered. <br>
+     * 音楽
+     */
+    public void setProductCategoryCode_Equal_音楽() {
+        setProductCategoryCode_Equal_AsProductCategory(CDef.ProductCategory.音楽);
+    }
+
+    /**
+     * Equal(=). As ハーブ (HEB). And OnlyOnceRegistered. <br>
+     * ハーブ: 0
+     */
+    public void setProductCategoryCode_Equal_ハーブ() {
+        setProductCategoryCode_Equal_AsProductCategory(CDef.ProductCategory.ハーブ);
+    }
+
+    /**
+     * Equal(=). As 楽器 (INS). And OnlyOnceRegistered. <br>
+     * 楽器: 0
+     */
+    public void setProductCategoryCode_Equal_楽器() {
+        setProductCategoryCode_Equal_AsProductCategory(CDef.ProductCategory.楽器);
+    }
+
+    /**
+     * Equal(=). As 音楽cd (MCD). And OnlyOnceRegistered. <br>
+     * 音楽CD: 0
+     */
+    public void setProductCategoryCode_Equal_音楽cd() {
+        setProductCategoryCode_Equal_AsProductCategory(CDef.ProductCategory.音楽cd);
     }
 
     protected void doSetProductCategoryCode_Equal(String productCategoryCode) {
@@ -530,11 +580,61 @@ public abstract class AbstractBsProductCQ extends AbstractConditionQuery {
 
     /**
      * NotEqual(&lt;&gt;). And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory}
      * @param productCategoryCode The value of productCategoryCode as notEqual. (basically NotNull, NotEmpty: error as default, or no condition as option)
      */
-    public void setProductCategoryCode_NotEqual(String productCategoryCode) {
+    protected void setProductCategoryCode_NotEqual(String productCategoryCode) {
         doSetProductCategoryCode_NotEqual(fRES(productCategoryCode));
+    }
+
+    /**
+     * NotEqual(&lt;&gt;). As ProductCategory. And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
+     * 商品のカテゴリ。階層構造である
+     * @param cdef The instance of classification definition (as ENUM type). (basically NotNull: error as default, or no condition as option)
+     */
+    public void setProductCategoryCode_NotEqual_AsProductCategory(CDef.ProductCategory cdef) {
+        doSetProductCategoryCode_NotEqual(cdef != null ? cdef.code() : null);
+    }
+
+    /**
+     * NotEqual(&lt;&gt;). As 食品 (FOD). And OnlyOnceRegistered. <br>
+     * 食品
+     */
+    public void setProductCategoryCode_NotEqual_食品() {
+        setProductCategoryCode_NotEqual_AsProductCategory(CDef.ProductCategory.食品);
+    }
+
+    /**
+     * NotEqual(&lt;&gt;). As 音楽 (MSC). And OnlyOnceRegistered. <br>
+     * 音楽
+     */
+    public void setProductCategoryCode_NotEqual_音楽() {
+        setProductCategoryCode_NotEqual_AsProductCategory(CDef.ProductCategory.音楽);
+    }
+
+    /**
+     * NotEqual(&lt;&gt;). As ハーブ (HEB). And OnlyOnceRegistered. <br>
+     * ハーブ: 0
+     */
+    public void setProductCategoryCode_NotEqual_ハーブ() {
+        setProductCategoryCode_NotEqual_AsProductCategory(CDef.ProductCategory.ハーブ);
+    }
+
+    /**
+     * NotEqual(&lt;&gt;). As 楽器 (INS). And OnlyOnceRegistered. <br>
+     * 楽器: 0
+     */
+    public void setProductCategoryCode_NotEqual_楽器() {
+        setProductCategoryCode_NotEqual_AsProductCategory(CDef.ProductCategory.楽器);
+    }
+
+    /**
+     * NotEqual(&lt;&gt;). As 音楽cd (MCD). And OnlyOnceRegistered. <br>
+     * 音楽CD: 0
+     */
+    public void setProductCategoryCode_NotEqual_音楽cd() {
+        setProductCategoryCode_NotEqual_AsProductCategory(CDef.ProductCategory.音楽cd);
     }
 
     protected void doSetProductCategoryCode_NotEqual(String productCategoryCode) {
@@ -542,48 +642,22 @@ public abstract class AbstractBsProductCQ extends AbstractConditionQuery {
     }
 
     /**
-     * GreaterThan(&gt;). And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
-     * @param productCategoryCode The value of productCategoryCode as greaterThan. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     */
-    public void setProductCategoryCode_GreaterThan(String productCategoryCode) {
-        regProductCategoryCode(CK_GT, fRES(productCategoryCode));
-    }
-
-    /**
-     * LessThan(&lt;). And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
-     * @param productCategoryCode The value of productCategoryCode as lessThan. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     */
-    public void setProductCategoryCode_LessThan(String productCategoryCode) {
-        regProductCategoryCode(CK_LT, fRES(productCategoryCode));
-    }
-
-    /**
-     * GreaterEqual(&gt;=). And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
-     * @param productCategoryCode The value of productCategoryCode as greaterEqual. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     */
-    public void setProductCategoryCode_GreaterEqual(String productCategoryCode) {
-        regProductCategoryCode(CK_GE, fRES(productCategoryCode));
-    }
-
-    /**
-     * LessEqual(&lt;=). And NullOrEmptyIgnored, OnlyOnceRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
-     * @param productCategoryCode The value of productCategoryCode as lessEqual. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     */
-    public void setProductCategoryCode_LessEqual(String productCategoryCode) {
-        regProductCategoryCode(CK_LE, fRES(productCategoryCode));
-    }
-
-    /**
      * InScope {in ('a', 'b')}. And NullOrEmptyIgnored, NullOrEmptyElementIgnored, SeveralRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory}
      * @param productCategoryCodeList The collection of productCategoryCode as inScope. (basically NotNull, NotEmpty: error as default, or no condition as option)
      */
-    public void setProductCategoryCode_InScope(Collection<String> productCategoryCodeList) {
+    protected void setProductCategoryCode_InScope(Collection<String> productCategoryCodeList) {
         doSetProductCategoryCode_InScope(productCategoryCodeList);
+    }
+
+    /**
+     * InScope {in ('a', 'b')}. As ProductCategory. And NullOrEmptyIgnored, NullOrEmptyElementIgnored, SeveralRegistered. <br>
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
+     * 商品のカテゴリ。階層構造である
+     * @param cdefList The list of classification definition (as ENUM type). (basically NotNull, NotEmpty: error as default, or no condition as option)
+     */
+    public void setProductCategoryCode_InScope_AsProductCategory(Collection<CDef.ProductCategory> cdefList) {
+        doSetProductCategoryCode_InScope(cTStrL(cdefList));
     }
 
     protected void doSetProductCategoryCode_InScope(Collection<String> productCategoryCodeList) {
@@ -592,59 +666,25 @@ public abstract class AbstractBsProductCQ extends AbstractConditionQuery {
 
     /**
      * NotInScope {not in ('a', 'b')}. And NullOrEmptyIgnored, NullOrEmptyElementIgnored, SeveralRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory}
      * @param productCategoryCodeList The collection of productCategoryCode as notInScope. (basically NotNull, NotEmpty: error as default, or no condition as option)
      */
-    public void setProductCategoryCode_NotInScope(Collection<String> productCategoryCodeList) {
+    protected void setProductCategoryCode_NotInScope(Collection<String> productCategoryCodeList) {
         doSetProductCategoryCode_NotInScope(productCategoryCodeList);
+    }
+
+    /**
+     * NotInScope {not in ('a', 'b')}. As ProductCategory. And NullOrEmptyIgnored, NullOrEmptyElementIgnored, SeveralRegistered. <br>
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
+     * 商品のカテゴリ。階層構造である
+     * @param cdefList The list of classification definition (as ENUM type). (basically NotNull, NotEmpty: error as default, or no condition as option)
+     */
+    public void setProductCategoryCode_NotInScope_AsProductCategory(Collection<CDef.ProductCategory> cdefList) {
+        doSetProductCategoryCode_NotInScope(cTStrL(cdefList));
     }
 
     protected void doSetProductCategoryCode_NotInScope(Collection<String> productCategoryCodeList) {
         regINS(CK_NINS, cTL(productCategoryCodeList), xgetCValueProductCategoryCode(), "PRODUCT_CATEGORY_CODE");
-    }
-
-    /**
-     * LikeSearch with various options. (versatile) {like '%xxx%' escape ...}. And NullOrEmptyIgnored, SeveralRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category} <br>
-     * <pre>e.g. setProductCategoryCode_LikeSearch("xxx", op <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> op.<span style="color: #CC4747">likeContain()</span>);</pre>
-     * @param productCategoryCode The value of productCategoryCode as likeSearch. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     * @param opLambda The callback for option of like-search. (NotNull)
-     */
-    public void setProductCategoryCode_LikeSearch(String productCategoryCode, ConditionOptionCall<LikeSearchOption> opLambda) {
-        setProductCategoryCode_LikeSearch(productCategoryCode, xcLSOP(opLambda));
-    }
-
-    /**
-     * LikeSearch with various options. (versatile) {like '%xxx%' escape ...}. And NullOrEmptyIgnored, SeveralRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category} <br>
-     * <pre>e.g. setProductCategoryCode_LikeSearch("xxx", new <span style="color: #CC4747">LikeSearchOption</span>().likeContain());</pre>
-     * @param productCategoryCode The value of productCategoryCode as likeSearch. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     * @param likeSearchOption The option of like-search. (NotNull)
-     */
-    protected void setProductCategoryCode_LikeSearch(String productCategoryCode, LikeSearchOption likeSearchOption) {
-        regLSQ(CK_LS, fRES(productCategoryCode), xgetCValueProductCategoryCode(), "PRODUCT_CATEGORY_CODE", likeSearchOption);
-    }
-
-    /**
-     * NotLikeSearch with various options. (versatile) {not like 'xxx%' escape ...} <br>
-     * And NullOrEmptyIgnored, SeveralRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
-     * @param productCategoryCode The value of productCategoryCode as notLikeSearch. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     * @param opLambda The callback for option of like-search. (NotNull)
-     */
-    public void setProductCategoryCode_NotLikeSearch(String productCategoryCode, ConditionOptionCall<LikeSearchOption> opLambda) {
-        setProductCategoryCode_NotLikeSearch(productCategoryCode, xcLSOP(opLambda));
-    }
-
-    /**
-     * NotLikeSearch with various options. (versatile) {not like 'xxx%' escape ...} <br>
-     * And NullOrEmptyIgnored, SeveralRegistered. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
-     * @param productCategoryCode The value of productCategoryCode as notLikeSearch. (basically NotNull, NotEmpty: error as default, or no condition as option)
-     * @param likeSearchOption The option of not-like-search. (NotNull)
-     */
-    protected void setProductCategoryCode_NotLikeSearch(String productCategoryCode, LikeSearchOption likeSearchOption) {
-        regLSQ(CK_NLS, fRES(productCategoryCode), xgetCValueProductCategoryCode(), "PRODUCT_CATEGORY_CODE", likeSearchOption);
     }
 
     protected void regProductCategoryCode(ConditionKey ky, Object vl) { regQ(ky, vl, xgetCValueProductCategoryCode(), "PRODUCT_CATEGORY_CODE"); }

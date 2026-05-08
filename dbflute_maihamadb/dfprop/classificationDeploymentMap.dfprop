@@ -22,5 +22,10 @@
 map:{
     ; $$ALL$$       = map:{suffix:_FLG=Flg}
     ; PURCHASE_PAYMENT = map:{PAYMENT_METHOD_CODE=PaymentMethod}
+    ; PRODUCT = map:{PRODUCT_CATEGORY_CODE=ProductCategory}
+    ; PRODUCT_CATEGORY = map:{
+        ; PRODUCT_CATEGORY_CODE=ProductCategory
+        ; PARENT_CATEGORY_CODE=ProductCategory
+    }
 }
 # ----------------/

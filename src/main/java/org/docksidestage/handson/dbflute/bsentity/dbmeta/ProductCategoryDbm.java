@@ -43,9 +43,23 @@ public class ProductCategoryDbm extends AbstractDBMeta {
     protected final Map<String, PropertyGateway> _epgMap = newHashMap();
     { xsetupEpg(); }
     protected void xsetupEpg() {
-        setupEpg(_epgMap, et -> ((ProductCategory)et).getProductCategoryCode(), (et, vl) -> ((ProductCategory)et).setProductCategoryCode((String)vl), "productCategoryCode");
+        setupEpg(_epgMap, et -> ((ProductCategory)et).getProductCategoryCode(), (et, vl) -> {
+            CDef.ProductCategory cls = (CDef.ProductCategory)gcls(et, columnProductCategoryCode(), vl);
+            if (cls != null) {
+                ((ProductCategory)et).setProductCategoryCodeAsProductCategory(cls);
+            } else {
+                ((ProductCategory)et).mynativeMappingProductCategoryCode((String)vl);
+            }
+        }, "productCategoryCode");
         setupEpg(_epgMap, et -> ((ProductCategory)et).getProductCategoryName(), (et, vl) -> ((ProductCategory)et).setProductCategoryName((String)vl), "productCategoryName");
-        setupEpg(_epgMap, et -> ((ProductCategory)et).getParentCategoryCode(), (et, vl) -> ((ProductCategory)et).setParentCategoryCode((String)vl), "parentCategoryCode");
+        setupEpg(_epgMap, et -> ((ProductCategory)et).getParentCategoryCode(), (et, vl) -> {
+            CDef.ProductCategory cls = (CDef.ProductCategory)gcls(et, columnParentCategoryCode(), vl);
+            if (cls != null) {
+                ((ProductCategory)et).setParentCategoryCodeAsProductCategory(cls);
+            } else {
+                ((ProductCategory)et).mynativeMappingParentCategoryCode((String)vl);
+            }
+        }, "parentCategoryCode");
     }
     public PropertyGateway findPropertyGateway(String prop)
     { return doFindEpg(_epgMap, prop); }
@@ -78,12 +92,12 @@ public class ProductCategoryDbm extends AbstractDBMeta {
     // ===================================================================================
     //                                                                         Column Info
     //                                                                         ===========
-    protected final ColumnInfo _columnProductCategoryCode = cci("PRODUCT_CATEGORY_CODE", "PRODUCT_CATEGORY_CODE", null, null, String.class, "productCategoryCode", null, true, false, true, "CHAR", 3, 0, null, null, false, null, null, null, "productList,productCategorySelfList", null, false);
+    protected final ColumnInfo _columnProductCategoryCode = cci("PRODUCT_CATEGORY_CODE", "PRODUCT_CATEGORY_CODE", null, null, String.class, "productCategoryCode", null, true, false, true, "CHAR", 3, 0, null, null, false, null, null, null, "productList,productCategorySelfList", CDef.DefMeta.ProductCategory, false);
     protected final ColumnInfo _columnProductCategoryName = cci("PRODUCT_CATEGORY_NAME", "PRODUCT_CATEGORY_NAME", null, null, String.class, "productCategoryName", null, false, false, true, "VARCHAR", 50, 0, null, null, false, null, null, null, null, null, false);
-    protected final ColumnInfo _columnParentCategoryCode = cci("PARENT_CATEGORY_CODE", "PARENT_CATEGORY_CODE", null, null, String.class, "parentCategoryCode", null, false, false, false, "CHAR", 3, 0, null, null, false, null, null, "productCategorySelf", null, null, false);
+    protected final ColumnInfo _columnParentCategoryCode = cci("PARENT_CATEGORY_CODE", "PARENT_CATEGORY_CODE", null, null, String.class, "parentCategoryCode", null, false, false, false, "CHAR", 3, 0, null, null, false, null, null, "productCategorySelf", null, CDef.DefMeta.ProductCategory, false);
 
     /**
-     * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3)}
+     * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3), classification=ProductCategory}
      * @return The information object of specified column. (NotNull)
      */
     public ColumnInfo columnProductCategoryCode() { return _columnProductCategoryCode; }
@@ -93,7 +107,7 @@ public class ProductCategoryDbm extends AbstractDBMeta {
      */
     public ColumnInfo columnProductCategoryName() { return _columnProductCategoryName; }
     /**
-     * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category}
+     * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category, classification=ProductCategory}
      * @return The information object of specified column. (NotNull)
      */
     public ColumnInfo columnParentCategoryCode() { return _columnParentCategoryCode; }

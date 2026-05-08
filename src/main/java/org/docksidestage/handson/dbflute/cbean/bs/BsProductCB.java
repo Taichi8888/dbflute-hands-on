@@ -366,7 +366,7 @@ public class BsProductCB extends AbstractConditionBean {
          */
         public SpecifiedColumn columnProductHandleCode() { return doColumn("PRODUCT_HANDLE_CODE"); }
         /**
-         * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
+         * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory}
          * @return The information object of specified column. (NotNull)
          */
         public SpecifiedColumn columnProductCategoryCode() { return doColumn("PRODUCT_CATEGORY_CODE"); }

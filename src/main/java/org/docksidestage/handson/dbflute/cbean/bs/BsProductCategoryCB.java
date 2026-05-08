@@ -12,6 +12,7 @@ import org.dbflute.cbean.scoping.*;
 import org.dbflute.dbmeta.DBMetaProvider;
 import org.dbflute.twowaysql.factory.SqlAnalyzerFactory;
 import org.dbflute.twowaysql.style.BoundDateDisplayTimeZoneProvider;
+import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.allcommon.DBFluteConfig;
 import org.docksidestage.handson.dbflute.allcommon.DBMetaInstanceHandler;
 import org.docksidestage.handson.dbflute.allcommon.ImplementedInvokerAssistant;
@@ -85,13 +86,13 @@ public class BsProductCategoryCB extends AbstractConditionBean {
     //                                                                 ===================
     /**
      * Accept the query condition of primary key as equal.
-     * @param productCategoryCode : PK, NotNull, CHAR(3). (NotNull)
+     * @param productCategoryCode : PK, NotNull, CHAR(3), classification=ProductCategory. (NotNull)
      * @return this. (NotNull)
      */
-    public ProductCategoryCB acceptPK(String productCategoryCode) {
+    public ProductCategoryCB acceptPK(CDef.ProductCategory productCategoryCode) {
         assertObjectNotNull("productCategoryCode", productCategoryCode);
         BsProductCategoryCB cb = this;
-        cb.query().setProductCategoryCode_Equal(productCategoryCode);
+        cb.query().setProductCategoryCode_Equal_AsProductCategory(productCategoryCode);
         return (ProductCategoryCB)this;
     }
 
@@ -318,7 +319,7 @@ public class BsProductCategoryCB extends AbstractConditionBean {
                              , HpSDRFunctionFactory sdrFuncFactory)
         { super(baseCB, qyCall, purpose, dbmetaProvider, sdrFuncFactory); }
         /**
-         * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3)}
+         * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3), classification=ProductCategory}
          * @return The information object of specified column. (NotNull)
          */
         public SpecifiedColumn columnProductCategoryCode() { return doColumn("PRODUCT_CATEGORY_CODE"); }
@@ -328,7 +329,7 @@ public class BsProductCategoryCB extends AbstractConditionBean {
          */
         public SpecifiedColumn columnProductCategoryName() { return doColumn("PRODUCT_CATEGORY_NAME"); }
         /**
-         * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category}
+         * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category, classification=ProductCategory}
          * @return The information object of specified column. (NotNull)
          */
         public SpecifiedColumn columnParentCategoryCode() { return doColumn("PARENT_CATEGORY_CODE"); }

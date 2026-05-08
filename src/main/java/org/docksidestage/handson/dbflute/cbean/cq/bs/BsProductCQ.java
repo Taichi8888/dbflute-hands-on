@@ -155,14 +155,14 @@ public class BsProductCQ extends AbstractBsProductCQ {
 
     /**
      * Add order-by as ascend. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory}
      * @return this. (NotNull)
      */
     public BsProductCQ addOrderBy_ProductCategoryCode_Asc() { regOBA("PRODUCT_CATEGORY_CODE"); return this; }
 
     /**
      * Add order-by as descend. <br>
-     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category}
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory}
      * @return this. (NotNull)
      */
     public BsProductCQ addOrderBy_ProductCategoryCode_Desc() { regOBD("PRODUCT_CATEGORY_CODE"); return this; }

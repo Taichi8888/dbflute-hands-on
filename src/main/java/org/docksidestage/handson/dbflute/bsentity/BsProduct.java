@@ -37,7 +37,7 @@ public abstract class BsProduct extends AbstractEntity implements DomainEntity {
     /** PRODUCT_HANDLE_CODE: {UQ, NotNull, VARCHAR(100)} */
     protected String _productHandleCode;
 
-    /** PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category} */
+    /** PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} */
     protected String _productCategoryCode;
 
     /** PRODUCT_STATUS_CODE: {IX, NotNull, CHAR(3), FK to product_status, classification=ProductStatus} */
@@ -98,6 +98,27 @@ public abstract class BsProduct extends AbstractEntity implements DomainEntity {
     //                                                             Classification Property
     //                                                             =======================
     /**
+     * Get the value of productCategoryCode as the classification of ProductCategory. <br>
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
+     * 商品のカテゴリ。階層構造である
+     * <p>It's treated as case insensitive and if the code value is null, it returns null.</p>
+     * @return The instance of classification definition (as ENUM type). (NullAllowed: when the column value is null)
+     */
+    public CDef.ProductCategory getProductCategoryCodeAsProductCategory() {
+        return CDef.ProductCategory.of(getProductCategoryCode()).orElse(null);
+    }
+
+    /**
+     * Set the value of productCategoryCode as the classification of ProductCategory. <br>
+     * PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
+     * 商品のカテゴリ。階層構造である
+     * @param cdef The instance of classification definition (as ENUM type). (NullAllowed: if null, null value is set to the column)
+     */
+    public void setProductCategoryCodeAsProductCategory(CDef.ProductCategory cdef) {
+        setProductCategoryCode(cdef != null ? cdef.code() : null);
+    }
+
+    /**
      * Get the value of productStatusCode as the classification of ProductStatus. <br>
      * PRODUCT_STATUS_CODE: {IX, NotNull, CHAR(3), FK to product_status, classification=ProductStatus} <br>
      * 商品ステータス。あんまり面白みのないステータス
@@ -121,6 +142,46 @@ public abstract class BsProduct extends AbstractEntity implements DomainEntity {
     // ===================================================================================
     //                                                              Classification Setting
     //                                                              ======================
+    /**
+     * Set the value of productCategoryCode as 食品 (FOD). <br>
+     * 食品
+     */
+    public void setProductCategoryCode_食品() {
+        setProductCategoryCodeAsProductCategory(CDef.ProductCategory.食品);
+    }
+
+    /**
+     * Set the value of productCategoryCode as 音楽 (MSC). <br>
+     * 音楽
+     */
+    public void setProductCategoryCode_音楽() {
+        setProductCategoryCodeAsProductCategory(CDef.ProductCategory.音楽);
+    }
+
+    /**
+     * Set the value of productCategoryCode as ハーブ (HEB). <br>
+     * ハーブ: 0
+     */
+    public void setProductCategoryCode_ハーブ() {
+        setProductCategoryCodeAsProductCategory(CDef.ProductCategory.ハーブ);
+    }
+
+    /**
+     * Set the value of productCategoryCode as 楽器 (INS). <br>
+     * 楽器: 0
+     */
+    public void setProductCategoryCode_楽器() {
+        setProductCategoryCodeAsProductCategory(CDef.ProductCategory.楽器);
+    }
+
+    /**
+     * Set the value of productCategoryCode as 音楽cd (MCD). <br>
+     * 音楽CD: 0
+     */
+    public void setProductCategoryCode_音楽cd() {
+        setProductCategoryCodeAsProductCategory(CDef.ProductCategory.音楽cd);
+    }
+
     /**
      * Set the value of productStatusCode as 生産販売可能 (ONS). <br>
      * 生産販売可能
@@ -148,6 +209,61 @@ public abstract class BsProduct extends AbstractEntity implements DomainEntity {
     // ===================================================================================
     //                                                        Classification Determination
     //                                                        ============================
+    /**
+     * Is the value of productCategoryCode 食品? <br>
+     * 食品
+     * <p>It's treated as case insensitive and if the code value is null, it returns false.</p>
+     * @return The determination, true or false.
+     */
+    public boolean isProductCategoryCode食品() {
+        CDef.ProductCategory cdef = getProductCategoryCodeAsProductCategory();
+        return cdef != null ? cdef.equals(CDef.ProductCategory.食品) : false;
+    }
+
+    /**
+     * Is the value of productCategoryCode 音楽? <br>
+     * 音楽
+     * <p>It's treated as case insensitive and if the code value is null, it returns false.</p>
+     * @return The determination, true or false.
+     */
+    public boolean isProductCategoryCode音楽() {
+        CDef.ProductCategory cdef = getProductCategoryCodeAsProductCategory();
+        return cdef != null ? cdef.equals(CDef.ProductCategory.音楽) : false;
+    }
+
+    /**
+     * Is the value of productCategoryCode ハーブ? <br>
+     * ハーブ: 0
+     * <p>It's treated as case insensitive and if the code value is null, it returns false.</p>
+     * @return The determination, true or false.
+     */
+    public boolean isProductCategoryCodeハーブ() {
+        CDef.ProductCategory cdef = getProductCategoryCodeAsProductCategory();
+        return cdef != null ? cdef.equals(CDef.ProductCategory.ハーブ) : false;
+    }
+
+    /**
+     * Is the value of productCategoryCode 楽器? <br>
+     * 楽器: 0
+     * <p>It's treated as case insensitive and if the code value is null, it returns false.</p>
+     * @return The determination, true or false.
+     */
+    public boolean isProductCategoryCode楽器() {
+        CDef.ProductCategory cdef = getProductCategoryCodeAsProductCategory();
+        return cdef != null ? cdef.equals(CDef.ProductCategory.楽器) : false;
+    }
+
+    /**
+     * Is the value of productCategoryCode 音楽cd? <br>
+     * 音楽CD: 0
+     * <p>It's treated as case insensitive and if the code value is null, it returns false.</p>
+     * @return The determination, true or false.
+     */
+    public boolean isProductCategoryCode音楽cd() {
+        CDef.ProductCategory cdef = getProductCategoryCodeAsProductCategory();
+        return cdef != null ? cdef.equals(CDef.ProductCategory.音楽cd) : false;
+    }
+
     /**
      * Is the value of productStatusCode 生産販売可能? <br>
      * 生産販売可能
@@ -393,7 +509,7 @@ public abstract class BsProduct extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [get] PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category} <br>
+     * [get] PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
      * @return The value of the column 'PRODUCT_CATEGORY_CODE'. (basically NotNull if selected: for the constraint)
      */
     public String getProductCategoryCode() {
@@ -402,10 +518,11 @@ public abstract class BsProduct extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [set] PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category} <br>
+     * [set] PRODUCT_CATEGORY_CODE: {IX, NotNull, CHAR(3), FK to product_category, classification=ProductCategory} <br>
      * @param productCategoryCode The value of the column 'PRODUCT_CATEGORY_CODE'. (basically NotNull if update: for the constraint)
      */
-    public void setProductCategoryCode(String productCategoryCode) {
+    protected void setProductCategoryCode(String productCategoryCode) {
+        checkClassificationCode("PRODUCT_CATEGORY_CODE", CDef.DefMeta.ProductCategory, productCategoryCode);
         registerModifiedProperty("productCategoryCode");
         _productCategoryCode = productCategoryCode;
     }
@@ -537,6 +654,14 @@ public abstract class BsProduct extends AbstractEntity implements DomainEntity {
     public void setVersionNo(Long versionNo) {
         registerModifiedProperty("versionNo");
         _versionNo = versionNo;
+    }
+
+    /**
+     * For framework so basically DON'T use this method.
+     * @param productCategoryCode The value of the column 'PRODUCT_CATEGORY_CODE'. (basically NotNull if update: for the constraint)
+     */
+    public void mynativeMappingProductCategoryCode(String productCategoryCode) {
+        setProductCategoryCode(productCategoryCode);
     }
 
     /**

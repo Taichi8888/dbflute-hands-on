@@ -109,14 +109,14 @@ public class BsProductCategoryCQ extends AbstractBsProductCategoryCQ {
 
     /**
      * Add order-by as ascend. <br>
-     * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3)}
+     * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3), classification=ProductCategory}
      * @return this. (NotNull)
      */
     public BsProductCategoryCQ addOrderBy_ProductCategoryCode_Asc() { regOBA("PRODUCT_CATEGORY_CODE"); return this; }
 
     /**
      * Add order-by as descend. <br>
-     * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3)}
+     * PRODUCT_CATEGORY_CODE: {PK, NotNull, CHAR(3), classification=ProductCategory}
      * @return this. (NotNull)
      */
     public BsProductCategoryCQ addOrderBy_ProductCategoryCode_Desc() { regOBD("PRODUCT_CATEGORY_CODE"); return this; }
@@ -149,14 +149,14 @@ public class BsProductCategoryCQ extends AbstractBsProductCategoryCQ {
 
     /**
      * Add order-by as ascend. <br>
-     * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category}
+     * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category, classification=ProductCategory}
      * @return this. (NotNull)
      */
     public BsProductCategoryCQ addOrderBy_ParentCategoryCode_Asc() { regOBA("PARENT_CATEGORY_CODE"); return this; }
 
     /**
      * Add order-by as descend. <br>
-     * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category}
+     * PARENT_CATEGORY_CODE: {IX, CHAR(3), FK to product_category, classification=ProductCategory}
      * @return this. (NotNull)
      */
     public BsProductCategoryCQ addOrderBy_ParentCategoryCode_Desc() { regOBD("PARENT_CATEGORY_CODE"); return this; }

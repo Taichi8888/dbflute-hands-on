@@ -2016,7 +2016,7 @@ product
 		<td class="sizecell"> 3 </td>
 		<td class="relcell"><a href="#product_category" title="FK_PRODUCT_PRODUCT_CATEGORY">product_category</a>&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
-		<td class="relcell"> &nbsp;</td>
+		<td class="relcell"><a href="#ProductCategoryCls">ProductCategory</a></td>
 		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">productCategoryCode</td>
 		<td class="subcell">String</td>
@@ -2192,7 +2192,7 @@ product_category
 		<td class="sizecell"> 3 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell"><a href="#product" title="FK_PRODUCT_PRODUCT_CATEGORY">product</a>,<br><a href="#product_category" title="FK_PRODUCT_CATEGORY_PARENT">product_category</a>&nbsp;</td>
-		<td class="relcell"> &nbsp;</td>
+		<td class="relcell"><a href="#ProductCategoryCls">ProductCategory</a></td>
 		<td class="commentcell"><pre>商品カテゴリコード</pre></td>
 		<td class="subcell">productCategoryCode</td>
 		<td class="subcell">String</td>
@@ -2228,7 +2228,7 @@ product_category
 		<td class="sizecell"> 3 </td>
 		<td class="relcell"><a href="#product_category" title="FK_PRODUCT_CATEGORY_PARENT">product_category</a>&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
-		<td class="relcell"> &nbsp;</td>
+		<td class="relcell"><a href="#ProductCategoryCls">ProductCategory</a></td>
 		<td class="commentcell"><pre>親カテゴリコード: 最上位の場合はデータなし。</pre></td>
 		<td class="subcell">parentCategoryCode</td>
 		<td class="subcell">String</td>
