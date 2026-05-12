@@ -60,7 +60,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
     private PurchaseBhv purchaseBhv;
 
  // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
- // TODO done hase こんな感じで、スクロールしたときのクラスの見通しよくしてみましょう。タグコメントと言います by jflute (2026/05/08)
+ // done hase こんな感じで、スクロールしたときのクラスの見通しよくしてみましょう。タグコメントと言います by jflute (2026/05/08)
  // ===================================================================================
  //                                                                      Silverストレッチ
  //                                                                      ==============
@@ -591,7 +591,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
         for (Member member : memberList) {
             assertNull(member.getBirthdate());
             LocalDateTime formalizedDatetime = member.getFormalizedDatetime();
-            // TODO done hase passedLast200506FormalizeMemberがあるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
+            // done hase passedLast200506FormalizeMemberがあるくらいなら、こっちも06を入れちゃっても by jflute (2026/03/27)
             // #1on1: テストコードのベタ指向のお話 (若干現場によるけど) (2026/04/02)
             boolean is200506FormalizeMember = formalizedDatetime != null
                     && formalizedDatetime.getYear() == targetDateTime.getYear()

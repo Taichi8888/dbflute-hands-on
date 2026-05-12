@@ -142,7 +142,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_Member();
             cb.setupSelect_Product();
             cb.query().queryMember().setMemberStatusCode_Equal_退会会員();
-            // TODO done hase falseのメソッドがあるのでそっちを by jflute (2026/05/08)
+            // done hase falseのメソッドがあるのでそっちを by jflute (2026/05/08)
             //            cb.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.False);
             cb.query().setPaymentCompleteFlg_Equal_False();
             cb.query().addOrderBy_PurchaseDatetime_Desc();
@@ -198,14 +198,14 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_MemberStatus();
             cb.specify().specifyMemberStatus().columnMemberStatusName();
             cb.query().setMemberStatusCode_Equal_仮会員();
-            // TODO done hase 第二ソートキーでfetch1を固定化した方が良い by jflute (2026/05/08)
+            // done hase 第二ソートキーでfetch1を固定化した方が良い by jflute (2026/05/08)
             //  Aさん 2026/05/08
             //  Bさん 2026/05/08
             // いまこの二人をどう並べるかは指定されていないので、論理的にはランダムになる。
             // すると、検索するたびに、AさんだったりBさんだったりブレる可能性がある。
             // なので、要件にはないけど、第二ソートキーでユニークに並べるようにした方がいい。
-            cb.query().addOrderBy_Birthdate_Desc();
-            cb.query().addOrderBy_MemberId_Asc();
+            cb.query().addOrderBy_Birthdate_Desc(); // (機能要件)
+            cb.query().addOrderBy_MemberId_Asc(); // 検索結果固定化のために (非機能要件)
             cb.fetchFirst(1);
         }).get();
 
@@ -214,7 +214,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
                 youngestProvisional.getMemberStatus().get().getMemberStatusName());
         assertTrue(youngestProvisional.isMemberStatusCode仮会員());
 
-        // TODO done hase ちょっと同率首位を検索するのも以下に追加で書いてみましょう by jflute (2026/05/08)
+        // done hase ちょっと同率首位を検索するのも以下に追加で書いてみましょう by jflute (2026/05/08)
         // 「導出値との比較で絞り込み」https://dbflute.seasar.org/ja/manual/function/genbafit/implfit/subquery/index.html by hase
 
         // ## Act ##
@@ -222,6 +222,8 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_MemberStatus();
             cb.specify().specifyMemberStatus().columnMemberStatusName();
             cb.query().setMemberStatusCode_Equal_仮会員();
+            // TODO hase cb2 をどうにかしたい。文字数を変えておきたい。JavaDocに合わせましょう by jflute (2026/05/12)
+            // #1on1: 昔はsubCB慣習だった話。でもLambdaになって隠蔽変数できなくなった話。
             cb.query().scalar_Equal().max(cb2 -> {
                 cb2.specify().columnBirthdate();
                 cb2.query().setMemberStatusCode_Equal_仮会員();
@@ -243,7 +245,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
 
         // ## Act ##
         // #1on1: 一応、できてる。支払い済み購入が存在する会員の中で一番若い人を取ってるので合ってる (2026/05/08)
-        // TODO done hase DBFluteの機能を使ってSQLを一回で済ませたい。 by jflute (2026/05/08)
+        // done hase DBFluteの機能を使ってSQLを一回で済ませたい。 by jflute (2026/05/08)
         // (現状の実装は、これはこれで思い出として残して)
         // (先に、仮会員の同率首位をみんな検索するやつを先にやってみた方が良い)
 
@@ -272,6 +274,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.query().queryMember().scalar_Equal().max(cb2 -> {
                 cb2.specify().columnBirthdate();
                 cb2.query().setMemberStatusCode_Equal_正式会員();
+                // TODO hase purchaseCb ではなく purchaseCB (ただの慣習) by jflute (2026/05/12)
                 cb2.query().existsPurchase(purchaseCb -> {
                     purchaseCb.query().setPaymentCompleteFlg_Equal_True();
                 });
@@ -303,15 +306,34 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Assert ##
         assertHasAnyElement(purchaseList);
         purchaseList.forEach(purchase -> {
+            // #1on1: javatryのstep8の復習 (2026/05/12)
+            // DBFluteのOptional利用の特徴として...ハイブリッド
+            //  o 関連テーブル: Optional (関連データがあるか？setupSelectしたか？)
+            //  o カラム: null (データがあるか？(NotNull制約か？) specifyしたか？)
+            // カラムの特徴から来る、OptionalのorElseThrow()ジレンマの嵐から、
+            // カラムのOptional採用は見送った。採用しても理想のOptionalにならないので。
+            // Optional採用するにしても、NotNull制約のカラムはどうする問題。
+            // (NotNull制約の有無で、簡単に自動生成コードが変わらないようにしている)
+            //
+            // DB設計のNotNull制約の勉強もした。
             String reasonText = purchase.getMember()
                     .flatMap(member -> member.getMemberWithdrawalAsOne())
                     .flatMap(withdrawal -> withdrawal.getWithdrawalReason())
                     .map(reason -> reason.getWithdrawalReasonText())
                     .orElse("none");
+            // TODO hase これは絶対に存在する場面なので、orElseThrow(引数なし)とか使うでいいかと by jflute (2026/05/12)
+            // e.g. ... = purchase.getProduct().orElseThrow().getProductStatus().orElseThrow().getProductStatusName();
             String statusName = purchase.getProduct()
                     .flatMap(product -> product.getProductStatus())
                     .map(status -> status.getProductStatusName())
                     .orElse("none"); // 勉強用メモ：必ず値があるのがわかっているのにflatmapは良くないのか？by hase
+            // #1on1: orElseThrow()ジレンマと同じ。業務的に必ず存在するのに、ないかもしれないことを想定した実装する？
+            // まず、必ず値があるのがわかっているのであれば、デフォルト値は使わない方が良い。紛らわしい。
+            // noneがありえるのかな？と思ってしまう。
+            // じゃあやっぱり、教科書通りのorElseThrow()で例外にするのか？
+            // した方がいいけど、こういった関連テーブルとかだとしょっちゅうこういう場面があって面倒。
+            // ちゃんとしたorElseThrow()で例外メッセージを入れる人も少ないかもしれない。
+            // なので、DBFluteのOptionalではalwaysPresent()とかリッチ例外付きのメソッドがある。
             log(reasonText, statusName, purchase.getPurchasePrice());
             assertTrue(purchase.getProduct().get().isProductStatusCode生産販売可能());
         });
