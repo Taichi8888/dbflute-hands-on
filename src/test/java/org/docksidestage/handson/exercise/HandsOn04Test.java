@@ -243,7 +243,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
 
         // ## Act ##
         // #1on1: 一応、できてる。支払い済み購入が存在する会員の中で一番若い人を取ってるので合ってる (2026/05/08)
-        // TODO hase DBFluteの機能を使ってSQLを一回で済ませたい。 by jflute (2026/05/08)
+        // TODO done hase DBFluteの機能を使ってSQLを一回で済ませたい。 by jflute (2026/05/08)
         // (現状の実装は、これはこれで思い出として残して)
         // (先に、仮会員の同率首位をみんな検索するやつを先にやってみた方が良い)
 
