@@ -60,7 +60,7 @@ public class HandsOn03Test extends UnitContainerTestCase {
     private PurchaseBhv purchaseBhv;
 
  // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
- // TODO hase こんな感じで、スクロールしたときのクラスの見通しよくしてみましょう。タグコメントと言います by jflute (2026/05/08)
+ // TODO done hase こんな感じで、スクロールしたときのクラスの見通しよくしてみましょう。タグコメントと言います by jflute (2026/05/08)
  // ===================================================================================
  //                                                                      Silverストレッチ
  //                                                                      ==============
@@ -231,6 +231,9 @@ public class HandsOn03Test extends UnitContainerTestCase {
          */
     }
 
+// ===================================================================================
+//                                                                       Goldストレッチ
+//                                                                            ========
     public void test_selectMemberOrderByStatusDisplayOrder() throws Exception {
         // ## Arrange ##
         
@@ -400,6 +403,9 @@ public class HandsOn03Test extends UnitContainerTestCase {
         });
     }
 
+// ===================================================================================
+//                                                                   Platinumストレッチ
+//                                                                            ========
     // done jflute 次回1on1ここから (2026/02/03)
     public void test_selectPurchaseInOneWeekFromFormalized() throws Exception {
         // ## Arrange ##

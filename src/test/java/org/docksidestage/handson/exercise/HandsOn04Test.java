@@ -1,5 +1,8 @@
 package org.docksidestage.handson.exercise;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
@@ -8,11 +11,13 @@ import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
 import org.docksidestage.handson.dbflute.exentity.Member;
+import org.docksidestage.handson.dbflute.exentity.Product;
 import org.docksidestage.handson.dbflute.exentity.Purchase;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
 // #1on1: dfpropの$sqlのお話。自己参照の階層構造になってるようなものに使える (2026/05/08)
 // #1on1: アプリ区分値のお話。ロジック区分値とも言う (2026/05/08)
+
 /**
  * セクション4のテストクラス
  * <ul>
@@ -36,8 +41,10 @@ public class HandsOn04Test extends UnitContainerTestCase {
     @Resource
     private MemberBhv memberBhv;
 
-    // TODO hase タグコメントをちょっと入れてみてください by jflute (2026/05/08)
-    
+    // TODO done hase タグコメントをちょっと入れてみてください by jflute (2026/05/08)
+    // ===================================================================================
+    //                                                            区分値使わずベタベタ実装 2題
+    //                                                            ========================
     public void test_beta_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
         // ## Arrange ##
         String statusCdWithdrawal = "WDL";
@@ -49,10 +56,10 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_Product();
             // done hase MEMBERテーブルがMEMBER_STATUS_CODEもってるから、queryMemberStatus()なくていい by jflute (2026/04/26)
             // cb.query().queryMember().queryMemberStatus().setMemberStatusCode_Equal(statusCdWithdrawal);
-// 区分値定義追加でコンパイルエラーになったのでコメントアウト by hase（2026/5/7）
+            // 区分値定義追加でコンパイルエラーになったのでコメントアウト by hase（2026/5/7）
             //            cb.query().queryMember().setMemberStatusCode_Equal(statusCdWithdrawal);
             //            cb.query().setPaymentCompleteFlg_Equal(paymentNotCompleted);
-//
+            //
             cb.query().addOrderBy_PurchaseDatetime_Desc();
         });
 
@@ -124,6 +131,9 @@ public class HandsOn04Test extends UnitContainerTestCase {
         });
     }
 
+    // ===================================================================================
+    //                                                         区分値使ってスマート実装 同じ2題
+    //                                                         ===========================
     public void test_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
         // ## Arrange ##
 
@@ -132,8 +142,9 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_Member();
             cb.setupSelect_Product();
             cb.query().queryMember().setMemberStatusCode_Equal_退会会員();
-            // TODO hase falseのメソッドがあるのでそっちを by jflute (2026/05/08)
-            cb.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.False);
+            // TODO done hase falseのメソッドがあるのでそっちを by jflute (2026/05/08)
+            //            cb.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.False);
+            cb.query().setPaymentCompleteFlg_Equal_False();
             cb.query().addOrderBy_PurchaseDatetime_Desc();
         });
 
@@ -161,8 +172,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Assert ##
 
         assertHasAnyElement(memberList);
-        boolean hasAnyWithdrawal =
-                memberList.stream().anyMatch(member -> member.isMemberStatusCode退会会員());
+        boolean hasAnyWithdrawal = memberList.stream().anyMatch(member -> member.isMemberStatusCode退会会員());
         assertTrue(hasAnyWithdrawal);
 
         memberList.forEach(member -> {
@@ -174,6 +184,9 @@ public class HandsOn04Test extends UnitContainerTestCase {
         });
     }
 
+    // ===================================================================================
+    //                                                                 区分値メソッド演習 5題
+    //                                                                 ===================
     public void test_selectMemberYoungestProvisional() throws Exception {
         // ## Arrange ##
 
@@ -181,49 +194,88 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // #1on1: 同率首位がいることを想定できてるのGood (2026/05/08)
         // 現状の実装だと、ランダムで1件を特定している。
         // もう一個は、同率首位をみんな取得する。
-        Member member = memberBhv.selectEntity(cb -> {
+        Member youngestProvisional = memberBhv.selectEntity(cb -> {
             cb.setupSelect_MemberStatus();
             cb.specify().specifyMemberStatus().columnMemberStatusName();
             cb.query().setMemberStatusCode_Equal_仮会員();
-            // TODO hase 第二ソートキーでfetch1を固定化した方が良い by jflute (2026/05/08)
+            // TODO done hase 第二ソートキーでfetch1を固定化した方が良い by jflute (2026/05/08)
             //  Aさん 2026/05/08
             //  Bさん 2026/05/08
             // いまこの二人をどう並べるかは指定されていないので、論理的にはランダムになる。
             // すると、検索するたびに、AさんだったりBさんだったりブレる可能性がある。
             // なので、要件にはないけど、第二ソートキーでユニークに並べるようにした方がいい。
             cb.query().addOrderBy_Birthdate_Desc();
+            cb.query().addOrderBy_MemberId_Asc();
             cb.fetchFirst(1);
         }).get();
-        
+
         // ## Assert ##
-        log(member.getMemberName(), member.getBirthdate(), member.getMemberStatus().get().getMemberStatusName());
-        assertTrue(member.isMemberStatusCode仮会員());
-        
-        // TODO hase ちょっと同率首位を検索するのも以下に追加で書いてみましょう by jflute (2026/05/08)
+        log(youngestProvisional.getMemberName(), youngestProvisional.getBirthdate(),
+                youngestProvisional.getMemberStatus().get().getMemberStatusName());
+        assertTrue(youngestProvisional.isMemberStatusCode仮会員());
+
+        // TODO done hase ちょっと同率首位を検索するのも以下に追加で書いてみましょう by jflute (2026/05/08)
+        // 「導出値との比較で絞り込み」https://dbflute.seasar.org/ja/manual/function/genbafit/implfit/subquery/index.html by hase
+
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.specify().specifyMemberStatus().columnMemberStatusName();
+            cb.query().setMemberStatusCode_Equal_仮会員();
+            cb.query().scalar_Equal().max(cb2 -> {
+                cb2.specify().columnBirthdate();
+                cb2.query().setMemberStatusCode_Equal_仮会員();
+            });
+            cb.query().addOrderBy_MemberId_Asc();
+        });
+
+        // ## Assert ##
+        assertHasAnyElement(memberList);
+        memberList.forEach(member -> {
+            log(member.getMemberName(), member.getBirthdate(), member.getMemberStatus().get().getMemberStatusName());
+            assertTrue(member.isMemberStatusCode仮会員());
+        });
+
     }
 
     public void test_selectPurchaseByYoungestFormalizedMember() throws Exception {
         // ## Arrange ##
-
 
         // ## Act ##
         // #1on1: 一応、できてる。支払い済み購入が存在する会員の中で一番若い人を取ってるので合ってる (2026/05/08)
         // TODO hase DBFluteの機能を使ってSQLを一回で済ませたい。 by jflute (2026/05/08)
         // (現状の実装は、これはこれで思い出として残して)
         // (先に、仮会員の同率首位をみんな検索するやつを先にやってみた方が良い)
-        Member youngestMember = purchaseBhv.selectEntity(cb -> {
-            cb.setupSelect_Member();
-            cb.query().setPaymentCompleteFlg_Equal_True();
-            cb.query().queryMember().setMemberStatusCode_Equal_正式会員();
-            cb.query().queryMember().addOrderBy_Birthdate_Desc();
-            cb.fetchFirst(1);
-        }).get().getMember().get();
+
+// おもいで
+//        Member youngestMember = purchaseBhv.selectEntity(cb -> {
+//            cb.setupSelect_Member();
+//            cb.query().setPaymentCompleteFlg_Equal_True();
+//            cb.query().queryMember().setMemberStatusCode_Equal_正式会員();
+//            cb.query().queryMember().addOrderBy_Birthdate_Desc();
+//            cb.fetchFirst(1);
+//        }).get().getMember().get();
+//
+//        ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
+//            cb.setupSelect_Member().withMemberStatus();
+//            cb.specify().specifyMember().specifyMemberStatus().columnMemberStatusName();
+//            cb.query().queryMember().setMemberId_Equal(youngestMember.getMemberId());
+//            cb.query().setPaymentCompleteFlg_Equal_True();
+//            cb.query().addOrderBy_PurchaseDatetime_Desc();
+//        });
 
         ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
             cb.setupSelect_Member().withMemberStatus();
             cb.specify().specifyMember().specifyMemberStatus().columnMemberStatusName();
-            cb.query().queryMember().setMemberId_Equal(youngestMember.getMemberId());
             cb.query().setPaymentCompleteFlg_Equal_True();
+            cb.query().queryMember().setMemberStatusCode_Equal_正式会員();
+            cb.query().queryMember().scalar_Equal().max(cb2 -> {
+                cb2.specify().columnBirthdate();
+                cb2.query().setMemberStatusCode_Equal_正式会員();
+                cb2.query().existsPurchase(purchaseCb -> {
+                    purchaseCb.query().setPaymentCompleteFlg_Equal_True();
+                });
+            });
             cb.query().addOrderBy_PurchaseDatetime_Desc();
         });
 
@@ -234,5 +286,48 @@ public class HandsOn04Test extends UnitContainerTestCase {
             log(member.getMemberName(), member.getMemberStatus().get().getMemberStatusName(), purchase.getPurchaseDatetime());
             assertTrue(member.isMemberStatusCode正式会員());
         });
+    }
+    
+    public void test_selectPurchaseOfProductOnSupport() throws Exception {
+        // ## Arrange ##
+        
+        
+        // ## Act ##
+        ListResultBean<Purchase> purchaseList = purchaseBhv.selectList(cb -> {
+            cb.setupSelect_Member().withMemberWithdrawalAsOne().withWithdrawalReason();
+            cb.setupSelect_Product().withProductStatus();
+            cb.query().queryProduct().setProductStatusCode_Equal_生産販売可能();
+            cb.query().addOrderBy_PurchasePrice_Desc();
+        });
+
+        // ## Assert ##
+        assertHasAnyElement(purchaseList);
+        purchaseList.forEach(purchase -> {
+            String reasonText = purchase.getMember()
+                    .flatMap(member -> member.getMemberWithdrawalAsOne())
+                    .flatMap(withdrawal -> withdrawal.getWithdrawalReason())
+                    .map(reason -> reason.getWithdrawalReasonText())
+                    .orElse("none");
+            String statusName = purchase.getProduct()
+                    .flatMap(product -> product.getProductStatus())
+                    .map(status -> status.getProductStatusName())
+                    .orElse("none"); // 勉強用メモ：必ず値があるのがわかっているのにflatmapは良くないのか？by hase
+            log(reasonText, statusName, purchase.getPurchasePrice());
+            assertTrue(purchase.getProduct().get().isProductStatusCode生産販売可能());
+        });
+    }
+    
+    public void test_selectMemberFormalizedOrWithdrawal() throws Exception {
+        // ## Arrange ##
+        
+        
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().setMemberStatusCode_InScope_AsMemberStatus(Arrays.asList(CDef.MemberStatus.正式会員, CDef.MemberStatus.退会会員));
+            cb.query().queryMemberStatus().addOrderBy_DisplayOrder_Asc();
+        });
+    
+        // ## Assert ##
+
     }
 }
