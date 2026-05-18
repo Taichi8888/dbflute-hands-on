@@ -434,10 +434,10 @@ public class HandsOn03Test extends UnitContainerTestCase {
             //
             // done hase adjustのデータがヒットするように by jflute (2026/02/18)
             // done hase fromの方を上に持ってきましょう by jflute (2026/02/18)
-            cb.columnQuery(leftCb ->
-                    leftCb.specify().columnPurchaseDatetime()
-            ).greaterEqual(rightCb -> // 正式登録前も購入できるの知らなかった、log出して気づいた
-                    rightCb.specify().specifyMember().columnFormalizedDatetime()
+            cb.columnQuery(leftCB ->
+                    leftCB.specify().columnPurchaseDatetime()
+            ).greaterEqual(rightCB -> // 正式登録前も購入できるの知らなかった、log出して気づいた
+                    rightCB.specify().specifyMember().columnFormalizedDatetime()
             );
             cb.columnQuery(leftCb ->
                     leftCb.specify().columnPurchaseDatetime()

@@ -6,12 +6,10 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.dbflute.cbean.result.ListResultBean;
-import org.dbflute.jdbc.ClassificationUndefinedHandlingType;
 import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
 import org.docksidestage.handson.dbflute.exentity.Member;
-import org.docksidestage.handson.dbflute.exentity.Product;
 import org.docksidestage.handson.dbflute.exentity.Purchase;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
@@ -222,11 +220,11 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_MemberStatus();
             cb.specify().specifyMemberStatus().columnMemberStatusName();
             cb.query().setMemberStatusCode_Equal_仮会員();
-            // TODO hase cb2 をどうにかしたい。文字数を変えておきたい。JavaDocに合わせましょう by jflute (2026/05/12)
+            // TODO done hase cb2 をどうにかしたい。文字数を変えておきたい。JavaDocに合わせましょう by jflute (2026/05/12)
             // #1on1: 昔はsubCB慣習だった話。でもLambdaになって隠蔽変数できなくなった話。
-            cb.query().scalar_Equal().max(cb2 -> {
-                cb2.specify().columnBirthdate();
-                cb2.query().setMemberStatusCode_Equal_仮会員();
+            cb.query().scalar_Equal().max(memberCB -> {
+                memberCB.specify().columnBirthdate();
+                memberCB.query().setMemberStatusCode_Equal_仮会員();
             });
             cb.query().addOrderBy_MemberId_Asc();
         });
@@ -274,9 +272,9 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.query().queryMember().scalar_Equal().max(cb2 -> {
                 cb2.specify().columnBirthdate();
                 cb2.query().setMemberStatusCode_Equal_正式会員();
-                // TODO hase purchaseCb ではなく purchaseCB (ただの慣習) by jflute (2026/05/12)
-                cb2.query().existsPurchase(purchaseCb -> {
-                    purchaseCb.query().setPaymentCompleteFlg_Equal_True();
+                // TODO done hase purchaseCb ではなく purchaseCB (ただの慣習) by jflute (2026/05/12)
+                cb2.query().existsPurchase(purchaseCB -> {
+                    purchaseCB.query().setPaymentCompleteFlg_Equal_True();
                 });
             });
             cb.query().addOrderBy_PurchaseDatetime_Desc();
@@ -321,12 +319,15 @@ public class HandsOn04Test extends UnitContainerTestCase {
                     .flatMap(withdrawal -> withdrawal.getWithdrawalReason())
                     .map(reason -> reason.getWithdrawalReasonText())
                     .orElse("none");
-            // TODO hase これは絶対に存在する場面なので、orElseThrow(引数なし)とか使うでいいかと by jflute (2026/05/12)
+            // TODO done hase これは絶対に存在する場面なので、orElseThrow(引数なし)とか使うでいいかと by jflute (2026/05/12)
             // e.g. ... = purchase.getProduct().orElseThrow().getProductStatus().orElseThrow().getProductStatusName();
-            String statusName = purchase.getProduct()
-                    .flatMap(product -> product.getProductStatus())
-                    .map(status -> status.getProductStatusName())
-                    .orElse("none"); // 勉強用メモ：必ず値があるのがわかっているのにflatmapは良くないのか？by hase
+            String statusName = purchase.getProduct().orElseThrow()
+                    .getProductStatus().orElseThrow()
+                    .getProductStatusName();
+// おもいで            String statusName = purchase.getProduct()
+//                    .flatMap(product -> product.getProductStatus())
+//                    .map(status -> status.getProductStatusName())
+//                    .orElse("none"); // 勉強用メモ：必ず値があるのがわかっているのにflatmapは良くないのか？by hase
             // #1on1: orElseThrow()ジレンマと同じ。業務的に必ず存在するのに、ないかもしれないことを想定した実装する？
             // まず、必ず値があるのがわかっているのであれば、デフォルト値は使わない方が良い。紛らわしい。
             // noneがありえるのかな？と思ってしまう。
@@ -345,11 +346,53 @@ public class HandsOn04Test extends UnitContainerTestCase {
         
         // ## Act ##
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.setupSelect_MemberStatus();
             cb.query().setMemberStatusCode_InScope_AsMemberStatus(Arrays.asList(CDef.MemberStatus.正式会員, CDef.MemberStatus.退会会員));
             cb.query().queryMemberStatus().addOrderBy_DisplayOrder_Asc();
         });
     
         // ## Assert ##
-
+        assertHasAnyElement(memberList.stream().filter(member -> member.isMemberStatusCode正式会員()).collect(Collectors.toList()));
+        assertHasAnyElement(memberList.stream().filter(member -> member.isMemberStatusCode退会会員()).collect(Collectors.toList()));
+        memberList.forEach(member -> {
+            String statusName = member.getMemberStatus()
+                    .map(status -> status.getMemberStatusName())
+                    .orElse("none");
+            log(statusName, member.getMemberName());
+            assertTrue(member.isMemberStatusCode正式会員() || member.isMemberStatusCode退会会員());
+        });
+        Member formalizedMember = memberList.stream().filter(member -> member.isMemberStatusCode正式会員()).findFirst().get();
+        log(formalizedMember.getMemberStatusCode(), formalizedMember.getMemberName());
+        formalizedMember.setMemberStatusCodeAsMemberStatus(CDef.MemberStatus.退会会員);
+        log(formalizedMember.getMemberStatusCode(),formalizedMember.getMemberStatus().get().getMemberStatusName(), formalizedMember.getMemberName());
+        assertTrue(formalizedMember.isMemberStatusCode退会会員());
+        assertTrue(memberBhv.selectEntity(cb -> {
+            cb.query().setMemberId_Equal(formalizedMember.getMemberId());
+        }).get().isMemberStatusCode正式会員());
+    }
+    
+    public void test_selectMemberYoungestOfEachStatusWithBankTransfer() throws Exception {
+        // ## Arrange ##
+        
+        
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.setupSelect_MemberStatus();
+            cb.query().arrangePaidByBankTransfer();
+            cb.query().scalar_Equal().max(memberCB -> {
+                memberCB.specify().columnBirthdate();
+                memberCB.query().arrangePaidByBankTransfer();
+            }).partitionBy(colCB -> colCB.specify().columnMemberStatusCode());
+            cb.query().addOrderBy_MemberStatusCode_Asc();
+        });
+    
+        // ## Assert ##
+        assertTrue(memberList.size() >= 3);
+        assertHasAnyElement(memberList.stream().filter(m -> m.isMemberStatusCode正式会員()).collect(Collectors.toList()));
+        assertHasAnyElement(memberList.stream().filter(m -> m.isMemberStatusCode仮会員()).collect(Collectors.toList()));
+        assertHasAnyElement(memberList.stream().filter(m -> m.isMemberStatusCode退会会員()).collect(Collectors.toList()));
+        memberList.forEach(member -> {
+            log(member.getMemberStatus().orElseThrow().getMemberStatusName(), member.getMemberName(), member.getBirthdate());
+        });
     }
 }
