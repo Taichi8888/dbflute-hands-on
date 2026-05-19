@@ -39,12 +39,13 @@ public class HandsOn04Test extends UnitContainerTestCase {
     @Resource
     private MemberBhv memberBhv;
 
-    // TODO done hase タグコメントをちょっと入れてみてください by jflute (2026/05/08)
+    // done hase タグコメントをちょっと入れてみてください by jflute (2026/05/08)
     // ===================================================================================
     //                                                            区分値使わずベタベタ実装 2題
     //                                                            ========================
     public void test_beta_selectPurchasePaymentNotCompletedByWithdrawal() throws Exception {
         // ## Arrange ##
+        @SuppressWarnings("unused")
         String statusCdWithdrawal = "WDL";
         int paymentNotCompleted = 0;
 
@@ -220,7 +221,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.setupSelect_MemberStatus();
             cb.specify().specifyMemberStatus().columnMemberStatusName();
             cb.query().setMemberStatusCode_Equal_仮会員();
-            // TODO done hase cb2 をどうにかしたい。文字数を変えておきたい。JavaDocに合わせましょう by jflute (2026/05/12)
+            // done hase cb2 をどうにかしたい。文字数を変えておきたい。JavaDocに合わせましょう by jflute (2026/05/12)
             // #1on1: 昔はsubCB慣習だった話。でもLambdaになって隠蔽変数できなくなった話。
             cb.query().scalar_Equal().max(memberCB -> {
                 memberCB.specify().columnBirthdate();
@@ -269,10 +270,12 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.specify().specifyMember().specifyMemberStatus().columnMemberStatusName();
             cb.query().setPaymentCompleteFlg_Equal_True();
             cb.query().queryMember().setMemberStatusCode_Equal_正式会員();
+            // TODO hase cb2まだいた (全体検索漏れ) by jflute (2026/05/19)
+            // 再び "指摘されたら、似たようなところが他にもないか探す" 習慣を
             cb.query().queryMember().scalar_Equal().max(cb2 -> {
                 cb2.specify().columnBirthdate();
                 cb2.query().setMemberStatusCode_Equal_正式会員();
-                // TODO done hase purchaseCb ではなく purchaseCB (ただの慣習) by jflute (2026/05/12)
+                // done hase purchaseCb ではなく purchaseCB (ただの慣習) by jflute (2026/05/12)
                 cb2.query().existsPurchase(purchaseCB -> {
                     purchaseCB.query().setPaymentCompleteFlg_Equal_True();
                 });
@@ -319,7 +322,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
                     .flatMap(withdrawal -> withdrawal.getWithdrawalReason())
                     .map(reason -> reason.getWithdrawalReasonText())
                     .orElse("none");
-            // TODO done hase これは絶対に存在する場面なので、orElseThrow(引数なし)とか使うでいいかと by jflute (2026/05/12)
+            // done hase これは絶対に存在する場面なので、orElseThrow(引数なし)とか使うでいいかと by jflute (2026/05/12)
             // e.g. ... = purchase.getProduct().orElseThrow().getProductStatus().orElseThrow().getProductStatusName();
             String statusName = purchase.getProduct().orElseThrow()
                     .getProductStatus().orElseThrow()
@@ -354,8 +357,8 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Assert ##
         assertHasAnyElement(memberList.stream().filter(member -> member.isMemberStatusCode正式会員()).collect(Collectors.toList()));
         assertHasAnyElement(memberList.stream().filter(member -> member.isMemberStatusCode退会会員()).collect(Collectors.toList()));
-        memberList.forEach(member -> {
-            String statusName = member.getMemberStatus()
+        memberList.forEach(member -> { // e.g. 20
+            String statusName = member.getMemberStatus() // e.g. n(=20)+1 SQL count if lazy load
                     .map(status -> status.getMemberStatusName())
                     .orElse("none");
             log(statusName, member.getMemberName());
@@ -369,6 +372,24 @@ public class HandsOn04Test extends UnitContainerTestCase {
         assertTrue(memberBhv.selectEntity(cb -> {
             cb.query().setMemberId_Equal(formalizedMember.getMemberId());
         }).get().isMemberStatusCode正式会員());
+
+        // #1on1: DBFluteは、メモリ上(Entityクラス)だけを修正しても、DBに勝手にupdateとかは掛からない (2026/05/19)
+        // あくまで、Behaviorで明示的に update とかしない限りDBは変わらない。あえてそうしている。
+        //
+        // 他のO/Rマッパーでは、Entityにsetしたら、それだけでupdateがされるものもある。
+        // EntityがDBと直結しているかのような...もしくは、Entity自体がDBのような...
+        // RDBを隠蔽して、オブジェクトDBみたいな感覚で扱うO/Rマッパー。
+        //
+        // DBFluteは、SQLをラップはしているけど、RDBは意識している。
+        // RDB意識のO/Rマッパー、RDB隠蔽のO/Rマッパー。
+        //
+        // DBFluteは、JPAをimplementsしていない。
+        // JPAは、RDB隠蔽のO/Rマッパーコンセプトのインターフェースなので合わない。
+        
+        // #1on1: DBFluteは、LazyLoadは(あえて)提供しない。 (2026/05/19)
+        // n+1問題が発生しやすい機能ということで避けている。
+        // n+1だとなぜ遅くなるのか？話。
+        // jfluteの経験では、1回のリクエストで300〜500のSQLを発行しているケースみたことある。
     }
     
     public void test_selectMemberYoungestOfEachStatusWithBankTransfer() throws Exception {
@@ -379,6 +400,12 @@ public class HandsOn04Test extends UnitContainerTestCase {
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.setupSelect_MemberStatus();
             cb.query().arrangePaidByBankTransfer();
+            // #1on1: partitionByのお話し (2026/05/19)
+            // #1on1: ArrangeQueryでCBの一部記述を部品化できる (2026/05/19)
+            // まず最小公倍数パターンのお話。無駄なデータをみんなで取りまくる。(可読性も悪い)
+            // そしてコピペパターン。まるごとコピーして、select...2()
+            // でもってそれらを避けようとして引数リモコンパターン。
+            // 現場のArrangeQuery。
             cb.query().scalar_Equal().max(memberCB -> {
                 memberCB.specify().columnBirthdate();
                 memberCB.query().arrangePaidByBankTransfer();
