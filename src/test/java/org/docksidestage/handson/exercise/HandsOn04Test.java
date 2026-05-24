@@ -489,4 +489,23 @@ public class HandsOn04Test extends UnitContainerTestCase {
     private boolean isPaymentCompleted() {
         return false;
     }
+
+    public void test_selectMemberOrderByMemberStatusDisplayOrder() throws Exception {
+        // ## Arrange ##
+        
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().queryMemberStatus().addOrderBy_DisplayOrder_Asc();
+            cb.query().addOrderBy_MemberId_Desc();
+        });
+    
+        // ## Assert ##
+        int prevDisplayOrder = 0;
+        for (Member member : memberList) {
+            assertFalse(member.getMemberStatus().isPresent());
+            int displayOrder = Integer.parseInt((String) member.getMemberStatusCodeAsMemberStatus().subItemMap().get("displayOrder"));
+            assertTrue(prevDisplayOrder <= displayOrder);
+            prevDisplayOrder = displayOrder;
+        }
+    }
 }

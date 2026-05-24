@@ -105,12 +105,33 @@ public interface CDef extends Classification {
         /** 仮会員: 入会直後のステータスで一部のサイトサービスが利用可能 */
         仮会員("PRV", "仮会員");
         private static ZzzoneSlimmer<MemberStatus> _slimmer = new ZzzoneSlimmer<>(MemberStatus.class, values());
+        private static final Map<String, Map<String, Object>> _subItemMapMap = new HashMap<String, Map<String, Object>>();
+        static {
+            {
+                Map<String, Object> subItemMap = new HashMap<String, Object>();
+                subItemMap.put("displayOrder", "1");
+                _subItemMapMap.put(正式会員.code(), Collections.unmodifiableMap(subItemMap));
+            }
+            {
+                Map<String, Object> subItemMap = new HashMap<String, Object>();
+                subItemMap.put("displayOrder", "2");
+                _subItemMapMap.put(退会会員.code(), Collections.unmodifiableMap(subItemMap));
+            }
+            {
+                Map<String, Object> subItemMap = new HashMap<String, Object>();
+                subItemMap.put("displayOrder", "3");
+                _subItemMapMap.put(仮会員.code(), Collections.unmodifiableMap(subItemMap));
+            }
+        }
         private String _code; private String _alias;
         private MemberStatus(String code, String alias) { _code = code; _alias = alias; }
         public String code() { return _code; } public String alias() { return _alias; }
         public Set<String> sisterSet() { return Collections.emptySet(); }
-        public Map<String, Object> subItemMap() { return Collections.emptyMap(); }
+        public Map<String, Object> subItemMap() { return _subItemMapMap.get(code()); }
         public ClassificationMeta meta() { return CDef.DefMeta.MemberStatus; }
+        public String displayOrder() {
+            return (String)subItemMap().get("displayOrder");
+        }
         /**
          * Is the classification in the group? <br>
          * サービスが利用できる会員 <br>
