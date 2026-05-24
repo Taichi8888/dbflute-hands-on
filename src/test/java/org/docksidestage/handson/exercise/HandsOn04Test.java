@@ -437,17 +437,19 @@ public class HandsOn04Test extends UnitContainerTestCase {
 //            log(member.getMemberName(), member.getMemberStatusCode());
 //        });
 //    }
-public void test_classificationUndefinedHandlingType() throws Exception {
-    // ## Arrange ##
 
-    // ## Act ##
-    ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
-        cb.query().addOrderBy_MemberId_Asc();
-    });
 
-    // ## Assert ##
-    memberList.forEach(member -> {
-        log(member.getMemberName(), member.getMemberStatusCodeAsMemberStatus());
-    });
-}
+    public void test_classificationUndefinedHandlingType() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().addOrderBy_MemberId_Asc();
+        });
+
+        // ## Assert ##
+        memberList.forEach(member -> {
+            log(member.getMemberName(), member.getMemberStatusCodeAsMemberStatus());
+        });
+    }
 }

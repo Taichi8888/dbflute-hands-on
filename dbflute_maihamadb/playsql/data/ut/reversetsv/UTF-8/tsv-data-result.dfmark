@@ -7,7 +7,7 @@
 data-directory: playsql/data/ut/reversetsv/UTF-8
 
 cyclic_01_01-PRODUCT.tsv (20)
-cyclic_02_01-MEMBER.tsv (20)
+cyclic_02_01-MEMBER.tsv (21)
 cyclic_02_02-MEMBER_ADDRESS.tsv (20)
 cyclic_02_03-MEMBER_LOGIN.tsv (56)
 cyclic_02_04-MEMBER_SECURITY.tsv (20)
