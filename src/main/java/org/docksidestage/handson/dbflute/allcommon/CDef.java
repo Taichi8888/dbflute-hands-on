@@ -678,37 +678,37 @@ public interface CDef extends Classification {
         /** フラグを示す */
         Flg(cd -> CDef.Flg.of(cd), nm -> CDef.Flg.byName(nm)
         , () -> CDef.Flg.listAll(), gp -> CDef.Flg.listByGroup(gp)
-        , ClassificationCodeType.Number, ClassificationUndefinedHandlingType.LOGGING),
+        , ClassificationCodeType.Number, ClassificationUndefinedHandlingType.EXCEPTION),
 
         /** 入会から退会までの会員のステータスを示す */
         MemberStatus(cd -> CDef.MemberStatus.of(cd), nm -> CDef.MemberStatus.byName(nm)
         , () -> CDef.MemberStatus.listAll(), gp -> CDef.MemberStatus.listByGroup(gp)
-        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.LOGGING),
+        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.EXCEPTION),
 
         /** 会員が受けられるサービスのランクを示す */
         ServiceRank(cd -> CDef.ServiceRank.of(cd), nm -> CDef.ServiceRank.byName(nm)
         , () -> CDef.ServiceRank.listAll(), gp -> CDef.ServiceRank.listByGroup(gp)
-        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.LOGGING),
+        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.EXCEPTION),
 
         /** 主に会員の住んでいる地域を示す */
         Region(cd -> CDef.Region.of(cd), nm -> CDef.Region.byName(nm)
         , () -> CDef.Region.listAll(), gp -> CDef.Region.listByGroup(gp)
-        , ClassificationCodeType.Number, ClassificationUndefinedHandlingType.LOGGING),
+        , ClassificationCodeType.Number, ClassificationUndefinedHandlingType.EXCEPTION),
 
         /** 会員の退会理由。なのでちょっとねがてぃぶ */
         WithdrawalReason(cd -> CDef.WithdrawalReason.of(cd), nm -> CDef.WithdrawalReason.byName(nm)
         , () -> CDef.WithdrawalReason.listAll(), gp -> CDef.WithdrawalReason.listByGroup(gp)
-        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.LOGGING),
+        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.EXCEPTION),
 
         /** 商品のカテゴリ。階層構造である */
         ProductCategory(cd -> CDef.ProductCategory.of(cd), nm -> CDef.ProductCategory.byName(nm)
         , () -> CDef.ProductCategory.listAll(), gp -> CDef.ProductCategory.listByGroup(gp)
-        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.LOGGING),
+        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.EXCEPTION),
 
         /** 商品ステータス。あんまり面白みのないステータス */
         ProductStatus(cd -> CDef.ProductStatus.of(cd), nm -> CDef.ProductStatus.byName(nm)
         , () -> CDef.ProductStatus.listAll(), gp -> CDef.ProductStatus.listByGroup(gp)
-        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.LOGGING),
+        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.EXCEPTION),
 
         /** 支払方法 */
         PaymentMethod(cd -> CDef.PaymentMethod.of(cd), nm -> CDef.PaymentMethod.byName(nm)

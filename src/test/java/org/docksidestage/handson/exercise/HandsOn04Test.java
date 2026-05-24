@@ -424,7 +424,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
     }
 
 //    区分値の追加を検証時に使用したテスト。元に戻してコンパイルエラーになることを確認したため、コメントアウト。by hase (2026/05/24)
-//    public void test_selectMemberHan() throws Exception {
+//    public void test_selectMemberIsHandson() throws Exception {
 //        // ## Arrange ##
 //
 //        // ## Act ##
@@ -437,4 +437,17 @@ public class HandsOn04Test extends UnitContainerTestCase {
 //            log(member.getMemberName(), member.getMemberStatusCode());
 //        });
 //    }
+public void test_classificationUndefinedHandlingType() throws Exception {
+    // ## Arrange ##
+
+    // ## Act ##
+    ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+        cb.query().addOrderBy_MemberId_Asc();
+    });
+
+    // ## Assert ##
+    memberList.forEach(member -> {
+        log(member.getMemberName(), member.getMemberStatusCodeAsMemberStatus());
+    });
+}
 }
