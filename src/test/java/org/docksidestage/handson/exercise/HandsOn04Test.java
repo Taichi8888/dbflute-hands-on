@@ -422,18 +422,19 @@ public class HandsOn04Test extends UnitContainerTestCase {
             log(member.getMemberStatus().orElseThrow().getMemberStatusName(), member.getMemberName(), member.getBirthdate());
         });
     }
-    
-    public void test_selectMemberHan() throws Exception {
-        // ## Arrange ##
 
-        // ## Act ##
-        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
-            cb.query().setMemberStatusCode_Equal_ハンズオン();
-        });
-
-        // ## Assert ##
-        memberList.forEach(member -> {
-            log(member.getMemberName(), member.getMemberStatusCode());
-        });
-    }
+//    区分値の追加を検証時に使用したテスト。元に戻してコンパイルエラーになることを確認したため、コメントアウト。by hase (2026/05/24)
+//    public void test_selectMemberHan() throws Exception {
+//        // ## Arrange ##
+//
+//        // ## Act ##
+//        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+//            cb.query().setMemberStatusCode_Equal_ハンズオン();
+//        });
+//
+//        // ## Assert ##
+//        memberList.forEach(member -> {
+//            log(member.getMemberName(), member.getMemberStatusCode());
+//        });
+//    }
 }

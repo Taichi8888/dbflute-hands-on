@@ -102,9 +102,7 @@ public interface CDef extends Classification {
         /** 退会会員: 退会が確定した会員でサイトサービスはダメ */
         退会会員("WDL", "退会会員"),
         /** 仮会員: 入会直後のステータスで一部のサイトサービスが利用可能 */
-        仮会員("PRV", "仮会員"),
-        /** ハンズオン: チョンボしたら一定期間サービス利用できない */
-        ハンズオン("HAN", "ハンズオン");
+        仮会員("PRV", "仮会員");
         private static ZzzoneSlimmer<MemberStatus> _slimmer = new ZzzoneSlimmer<>(MemberStatus.class, values());
         private String _code; private String _alias;
         private MemberStatus(String code, String alias) { _code = code; _alias = alias; }

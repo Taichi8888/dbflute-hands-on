@@ -146,14 +146,6 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
         setMemberStatusCodeAsMemberStatus(CDef.MemberStatus.仮会員);
     }
 
-    /**
-     * Set the value of memberStatusCode as ハンズオン (HAN). <br>
-     * ハンズオン: チョンボしたら一定期間サービス利用できない
-     */
-    public void setMemberStatusCode_ハンズオン() {
-        setMemberStatusCodeAsMemberStatus(CDef.MemberStatus.ハンズオン);
-    }
-
     // ===================================================================================
     //                                                        Classification Determination
     //                                                        ============================
@@ -188,17 +180,6 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     public boolean isMemberStatusCode仮会員() {
         CDef.MemberStatus cdef = getMemberStatusCodeAsMemberStatus();
         return cdef != null ? cdef.equals(CDef.MemberStatus.仮会員) : false;
-    }
-
-    /**
-     * Is the value of memberStatusCode ハンズオン? <br>
-     * ハンズオン: チョンボしたら一定期間サービス利用できない
-     * <p>It's treated as case insensitive and if the code value is null, it returns false.</p>
-     * @return The determination, true or false.
-     */
-    public boolean isMemberStatusCodeハンズオン() {
-        CDef.MemberStatus cdef = getMemberStatusCodeAsMemberStatus();
-        return cdef != null ? cdef.equals(CDef.MemberStatus.ハンズオン) : false;
     }
 
     // ===================================================================================
