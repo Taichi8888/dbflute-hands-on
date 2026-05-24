@@ -438,18 +438,18 @@ public class HandsOn04Test extends UnitContainerTestCase {
 //        });
 //    }
 
-
-    public void test_classificationUndefinedHandlingType() throws Exception {
-        // ## Arrange ##
-
-        // ## Act ##
-        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
-            cb.query().addOrderBy_MemberId_Asc();
-        });
-
-        // ## Assert ##
-        memberList.forEach(member -> {
-            log(member.getMemberName(), member.getMemberStatusCodeAsMemberStatus());
-        });
-    }
+//    classificationUndefinedHandlingType=EXCEPTION の動作確認に使用したテストby hase (2026/05/24)
+//    public void test_classificationUndefinedHandlingType() throws Exception {
+//        // ## Arrange ##
+//
+//        // ## Act ##
+//        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+//            cb.query().addOrderBy_MemberId_Asc();
+//        });
+//
+//        // ## Assert ##
+//        memberList.forEach(member -> {
+//            log(member.getMemberName(), member.getMemberStatusCodeAsMemberStatus());
+//        });
+//    }
 }
