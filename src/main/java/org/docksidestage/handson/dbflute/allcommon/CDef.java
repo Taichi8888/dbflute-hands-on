@@ -110,7 +110,17 @@ public interface CDef extends Classification {
         public Set<String> sisterSet() { return Collections.emptySet(); }
         public Map<String, Object> subItemMap() { return Collections.emptyMap(); }
         public ClassificationMeta meta() { return CDef.DefMeta.MemberStatus; }
-        public boolean inGroup(String groupName) { return false; }
+        /**
+         * Is the classification in the group? <br>
+         * サービスが利用できる会員 <br>
+         * The group elements:[正式会員, 仮会員]
+         * @return The determination, true or false.
+         */
+        public boolean isServiceAvailable() { return 正式会員.equals(this) || 仮会員.equals(this); }
+        public boolean inGroup(String groupName) {
+            if ("serviceAvailable".equalsIgnoreCase(groupName)) { return isServiceAvailable(); }
+            return false;
+        }
         /**
          * Get the classification of the code. (CaseInsensitive)
          * @param code The value of code, which is case-insensitive. (NullAllowed: if null, returns empty)
@@ -150,6 +160,7 @@ public interface CDef extends Classification {
          */
         public static List<MemberStatus> listByGroup(String groupName) {
             if (groupName == null) { throw new IllegalArgumentException("The argument 'groupName' should not be null."); }
+            if ("serviceAvailable".equalsIgnoreCase(groupName)) { return listOfServiceAvailable(); }
             throw new ClassificationNotFoundException("Unknown classification group: MemberStatus." + groupName);
         }
         /**
@@ -161,13 +172,25 @@ public interface CDef extends Classification {
         @Deprecated
         public static List<MemberStatus> listOf(Collection<String> codeList) { return _slimmer.listOf(codeList); }
         /**
+         * Get the list of group classification elements. (returns new copied list) <br>
+         * サービスが利用できる会員 <br>
+         * The group elements:[正式会員, 仮会員]
+         * @return The snapshot list of classification elements in the group. (NotNull)
+         */
+        public static List<MemberStatus> listOfServiceAvailable() {
+            return new ArrayList<>(Arrays.asList(正式会員, 仮会員));
+        }
+        /**
          * <span style="color: #AD4747; font-size: 120%">Old style so use listByGroup(groupName).</span>
          * @param groupName The string of group name, which is case-sensitive. (NullAllowed: if null, returns empty list)
          * @return The snapshot list of classification elements in the group. (NotNull, EmptyAllowed: if the group is not found)
          * @deprecated use listByGroup(groupName) instead.
          */
         @Deprecated
-        public static List<MemberStatus> groupOf(String groupName) { return new ArrayList<>(); }
+        public static List<MemberStatus> groupOf(String groupName) {
+            if ("serviceAvailable".equalsIgnoreCase(groupName)) { return listOfServiceAvailable(); }
+            return new ArrayList<>();
+        }
         @Override public String toString() { return code(); }
     }
 

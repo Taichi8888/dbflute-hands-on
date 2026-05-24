@@ -224,6 +224,16 @@ public abstract class BsMemberLogin extends AbstractEntity implements DomainEnti
         return cdef != null ? cdef.equals(CDef.MemberStatus.仮会員) : false;
     }
 
+    /**
+     * サービスが利用できる会員 <br>
+     * The group elements:[正式会員, 仮会員]
+     * @return The determination, true or false.
+     */
+    public boolean isLoginMemberStatusCode_ServiceAvailable() {
+        CDef.MemberStatus cdef = getLoginMemberStatusCodeAsMemberStatus();
+        return cdef != null && cdef.isServiceAvailable();
+    }
+
     // ===================================================================================
     //                                                           Classification Name/Alias
     //                                                           =========================

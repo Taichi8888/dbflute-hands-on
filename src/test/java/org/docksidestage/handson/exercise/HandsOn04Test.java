@@ -452,4 +452,18 @@ public class HandsOn04Test extends UnitContainerTestCase {
 //            log(member.getMemberName(), member.getMemberStatusCodeAsMemberStatus());
 //        });
 //    }
+    public void test_selectMemberIsServiceAvailable() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().setMemberStatusCode_InScope_ServiceAvailable();
+        });
+    
+        // ## Assert ##
+        memberList.forEach(member -> {
+            assertTrue(member.isMemberStatusCode_ServiceAvailable());
+        });
+    }
+
 }
