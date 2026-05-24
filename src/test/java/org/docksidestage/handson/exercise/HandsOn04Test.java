@@ -478,8 +478,8 @@ public class HandsOn04Test extends UnitContainerTestCase {
         });
 
         // ## Assert ##
-        memberBhv.loadPurchase(memberList, purchaseCb -> {
-            purchaseCb.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.codeOf(isPaymentCompleted()));
+        memberBhv.loadPurchase(memberList, purchaseCB -> {
+            purchaseCB.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.codeOf(isPaymentCompleted()));
         });
         memberList.forEach(member -> {
             assertTrue(member.getPurchaseList().stream().anyMatch(purchase -> purchase.isPaymentCompleteFlgFalse()));
