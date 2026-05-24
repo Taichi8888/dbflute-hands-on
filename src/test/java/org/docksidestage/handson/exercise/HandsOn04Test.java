@@ -465,5 +465,28 @@ public class HandsOn04Test extends UnitContainerTestCase {
             assertTrue(member.isMemberStatusCode_ServiceAvailable());
         });
     }
+    public void test_selectMemberWithPurchasePaymentNotCompleted() throws Exception {
+        // ## Arrange ##
 
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().existsPurchase(purchaseCB -> {
+                purchaseCB.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.codeOf(isPaymentCompleted()));
+            });
+            cb.query().addOrderBy_FormalizedDatetime_Desc();
+            cb.query().addOrderBy_MemberId_Asc();
+        });
+
+        // ## Assert ##
+        memberBhv.loadPurchase(memberList, purchaseCb -> {
+            purchaseCb.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.codeOf(isPaymentCompleted()));
+        });
+        memberList.forEach(member -> {
+            assertTrue(member.getPurchaseList().stream().anyMatch(purchase -> purchase.isPaymentCompleteFlgFalse()));
+        });
+    }
+
+    private boolean isPaymentCompleted() {
+        return false;
+    }
 }

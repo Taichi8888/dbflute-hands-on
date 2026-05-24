@@ -22,14 +22,15 @@ public interface CDef extends Classification {
      */
     public enum Flg implements CDef {
         /** はい: 有効を示す */
-        True("1", "はい"),
+        True("1", "はい", new String[] {"true"}),
         /** いいえ: 無効を示す */
-        False("0", "いいえ");
+        False("0", "いいえ", new String[] {"false"});
         private static ZzzoneSlimmer<Flg> _slimmer = new ZzzoneSlimmer<>(Flg.class, values());
-        private String _code; private String _alias;
-        private Flg(String code, String alias) { _code = code; _alias = alias; }
+        private String _code; private String _alias; private Set<String> _sisterSet;
+        private Flg(String code, String alias, String[] sisters)
+        { _code = code; _alias = alias; _sisterSet = ZzzoneSlimmer.toSisterSet(sisters); }
         public String code() { return _code; } public String alias() { return _alias; }
-        public Set<String> sisterSet() { return Collections.emptySet(); }
+        public Set<String> sisterSet() { return _sisterSet; }
         public Map<String, Object> subItemMap() { return Collections.emptyMap(); }
         public ClassificationMeta meta() { return CDef.DefMeta.Flg; }
         public boolean inGroup(String groupName) { return false; }

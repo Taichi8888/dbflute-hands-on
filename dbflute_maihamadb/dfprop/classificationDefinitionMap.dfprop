@@ -39,8 +39,8 @@
 map:{
     ; Flg = list:{
         ; map:{topComment=フラグを示す; codeType=Number}
-        ; map:{code=1; name=True ; alias=はい  ; comment=有効を示す}
-        ; map:{code=0; name=False; alias=いいえ; comment=無効を示す}
+        ; map:{code=1; name=True ; alias=はい  ; comment=有効を示す ; sisterCode=true}
+        ; map:{code=0; name=False; alias=いいえ; comment=無効を示す ; sisterCode=false}
     }
     ; MemberStatus = list:{
         ; map:{
