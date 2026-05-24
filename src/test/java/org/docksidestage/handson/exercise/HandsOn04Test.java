@@ -270,13 +270,13 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.specify().specifyMember().specifyMemberStatus().columnMemberStatusName();
             cb.query().setPaymentCompleteFlg_Equal_True();
             cb.query().queryMember().setMemberStatusCode_Equal_正式会員();
-            // TODO hase cb2まだいた (全体検索漏れ) by jflute (2026/05/19)
+            // TODO done hase cb2まだいた (全体検索漏れ) by jflute (2026/05/19)
             // 再び "指摘されたら、似たようなところが他にもないか探す" 習慣を
-            cb.query().queryMember().scalar_Equal().max(cb2 -> {
-                cb2.specify().columnBirthdate();
-                cb2.query().setMemberStatusCode_Equal_正式会員();
+            cb.query().queryMember().scalar_Equal().max(memberCB -> {
+                memberCB.specify().columnBirthdate();
+                memberCB.query().setMemberStatusCode_Equal_正式会員();
                 // done hase purchaseCb ではなく purchaseCB (ただの慣習) by jflute (2026/05/12)
-                cb2.query().existsPurchase(purchaseCB -> {
+                memberCB.query().existsPurchase(purchaseCB -> {
                     purchaseCB.query().setPaymentCompleteFlg_Equal_True();
                 });
             });
@@ -420,6 +420,20 @@ public class HandsOn04Test extends UnitContainerTestCase {
         assertHasAnyElement(memberList.stream().filter(m -> m.isMemberStatusCode退会会員()).collect(Collectors.toList()));
         memberList.forEach(member -> {
             log(member.getMemberStatus().orElseThrow().getMemberStatusName(), member.getMemberName(), member.getBirthdate());
+        });
+    }
+    
+    public void test_selectMemberHan() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.query().setMemberStatusCode_Equal_ハンズオン();
+        });
+
+        // ## Assert ##
+        memberList.forEach(member -> {
+            log(member.getMemberName(), member.getMemberStatusCode());
         });
     }
 }

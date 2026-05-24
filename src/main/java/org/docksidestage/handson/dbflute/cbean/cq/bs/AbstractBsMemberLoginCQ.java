@@ -534,6 +534,14 @@ public abstract class AbstractBsMemberLoginCQ extends AbstractConditionQuery {
         setLoginMemberStatusCode_Equal_AsMemberStatus(CDef.MemberStatus.仮会員);
     }
 
+    /**
+     * Equal(=). As ハンズオン (HAN). And OnlyOnceRegistered. <br>
+     * ハンズオン: チョンボしたら一定期間サービス利用できない
+     */
+    public void setLoginMemberStatusCode_Equal_ハンズオン() {
+        setLoginMemberStatusCode_Equal_AsMemberStatus(CDef.MemberStatus.ハンズオン);
+    }
+
     protected void doSetLoginMemberStatusCode_Equal(String loginMemberStatusCode) {
         regLoginMemberStatusCode(CK_EQ, loginMemberStatusCode);
     }
@@ -579,6 +587,14 @@ public abstract class AbstractBsMemberLoginCQ extends AbstractConditionQuery {
      */
     public void setLoginMemberStatusCode_NotEqual_仮会員() {
         setLoginMemberStatusCode_NotEqual_AsMemberStatus(CDef.MemberStatus.仮会員);
+    }
+
+    /**
+     * NotEqual(&lt;&gt;). As ハンズオン (HAN). And OnlyOnceRegistered. <br>
+     * ハンズオン: チョンボしたら一定期間サービス利用できない
+     */
+    public void setLoginMemberStatusCode_NotEqual_ハンズオン() {
+        setLoginMemberStatusCode_NotEqual_AsMemberStatus(CDef.MemberStatus.ハンズオン);
     }
 
     protected void doSetLoginMemberStatusCode_NotEqual(String loginMemberStatusCode) {

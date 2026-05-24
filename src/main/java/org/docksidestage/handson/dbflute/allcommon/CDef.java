@@ -102,7 +102,9 @@ public interface CDef extends Classification {
         /** 退会会員: 退会が確定した会員でサイトサービスはダメ */
         退会会員("WDL", "退会会員"),
         /** 仮会員: 入会直後のステータスで一部のサイトサービスが利用可能 */
-        仮会員("PRV", "仮会員");
+        仮会員("PRV", "仮会員"),
+        /** ハンズオン: チョンボしたら一定期間サービス利用できない */
+        ハンズオン("HAN", "ハンズオン");
         private static ZzzoneSlimmer<MemberStatus> _slimmer = new ZzzoneSlimmer<>(MemberStatus.class, values());
         private String _code; private String _alias;
         private MemberStatus(String code, String alias) { _code = code; _alias = alias; }
@@ -713,7 +715,7 @@ public interface CDef extends Classification {
         /** 支払方法 */
         PaymentMethod(cd -> CDef.PaymentMethod.of(cd), nm -> CDef.PaymentMethod.byName(nm)
         , () -> CDef.PaymentMethod.listAll(), gp -> CDef.PaymentMethod.listByGroup(gp)
-        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.LOGGING);
+        , ClassificationCodeType.String, ClassificationUndefinedHandlingType.EXCEPTION);
 
         private static final Map<String, DefMeta> _nameMetaMap = new HashMap<>();
         static {
