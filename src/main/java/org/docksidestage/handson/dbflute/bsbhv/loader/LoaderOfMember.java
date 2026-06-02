@@ -145,6 +145,13 @@ public class LoaderOfMember {
         return _foreignMemberStatusLoader;
     }
 
+    protected LoaderOfMemberAddress _foreignMemberAddressAsValidLoader;
+    public LoaderOfMemberAddress pulloutMemberAddressAsValid() {
+        if (_foreignMemberAddressAsValidLoader == null)
+        { _foreignMemberAddressAsValidLoader = new LoaderOfMemberAddress().ready(myBhv().pulloutMemberAddressAsValid(_selectedList), _selector); }
+        return _foreignMemberAddressAsValidLoader;
+    }
+
     protected LoaderOfMemberSecurity _foreignMemberSecurityAsOneLoader;
     public LoaderOfMemberSecurity pulloutMemberSecurityAsOne() {
         if (_foreignMemberSecurityAsOneLoader == null)
