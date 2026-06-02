@@ -270,7 +270,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
             cb.specify().specifyMember().specifyMemberStatus().columnMemberStatusName();
             cb.query().setPaymentCompleteFlg_Equal_True();
             cb.query().queryMember().setMemberStatusCode_Equal_正式会員();
-            // TODO done hase cb2まだいた (全体検索漏れ) by jflute (2026/05/19)
+            // done hase cb2まだいた (全体検索漏れ) by jflute (2026/05/19)
             // 再び "指摘されたら、似たようなところが他にもないか探す" 習慣を
             cb.query().queryMember().scalar_Equal().max(memberCB -> {
                 memberCB.specify().columnBirthdate();
@@ -456,6 +456,11 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Arrange ##
 
         // ## Act ##
+        // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+        // #1on1: groupingMap大事話 (2026/06/02)
+        // 抽象化ができるなら、1つでgroupを作っても良い話。
+        // 区分値関係なく、プログラミングの再利用におけるコツの一つ。
+        // _/_/_/_/_/_/_/_/
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.query().setMemberStatusCode_InScope_ServiceAvailable();
         });
@@ -469,6 +474,8 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Arrange ##
 
         // ## Act ##
+        // #1on1: 姉妹コードの使いどころ (2026/06/02)
+        // オーソドックスには、Flgぐらい。
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.query().existsPurchase(purchaseCB -> {
                 purchaseCB.query().setPaymentCompleteFlg_Equal_AsFlg(CDef.Flg.codeOf(isPaymentCompleted()));
@@ -494,6 +501,7 @@ public class HandsOn04Test extends UnitContainerTestCase {
         // ## Arrange ##
         
         // ## Act ##
+        // #1on1: subItem話、現場でわりと使われている (2026/06/02)
         ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
             cb.query().queryMemberStatus().addOrderBy_DisplayOrder_Asc();
             cb.query().addOrderBy_MemberId_Desc();
@@ -508,4 +516,9 @@ public class HandsOn04Test extends UnitContainerTestCase {
             prevDisplayOrder = displayOrder;
         }
     }
+    
+    // #1on1: 区分値のセオリーを学ぶことで、DBFluteじゃない現場でも良いenumを作れる (2026/06/02)
+    // #1on1: アプリ区分値のお話。LastaFluteでの例。 (2026/06/02)
+    // 区分値のレイヤー分けのお話も。
+    // 現場でのアプリ区分値も見てみた。
 }

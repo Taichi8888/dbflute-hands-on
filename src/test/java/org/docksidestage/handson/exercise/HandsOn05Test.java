@@ -7,6 +7,9 @@ import org.docksidestage.handson.dbflute.exbhv.MemberAddressBhv;
 import org.docksidestage.handson.dbflute.exentity.MemberAddress;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
+// #1on1: 業務的one-to-one とは？ (2026/06/02)
+// ちょこっとだけ応用編の紹介も。いずれしっかり。
+
 public class HandsOn05Test extends UnitContainerTestCase {
 
     @Resource
