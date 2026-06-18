@@ -239,6 +239,29 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
         _memberAddressAsValid = memberAddressAsValid;
     }
 
+    /** member_login by my MEMBER_ID, named 'memberLoginAsLatest'. */
+    protected OptionalEntity<MemberLogin> _memberLoginAsLatest;
+
+    /**
+     * [get] member_login by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
+     * 最終ログイン <br>
+     * Optional: alwaysPresent(), ifPresent().orElse(), get(), ...
+     * @return The entity of foreign property 'memberLoginAsLatest'. (NotNull, EmptyAllowed: when e.g. null FK column, no setupSelect)
+     */
+    public OptionalEntity<MemberLogin> getMemberLoginAsLatest() {
+        if (_memberLoginAsLatest == null) { _memberLoginAsLatest = OptionalEntity.relationEmpty(this, "memberLoginAsLatest"); }
+        return _memberLoginAsLatest;
+    }
+
+    /**
+     * [set] member_login by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
+     * 最終ログイン
+     * @param memberLoginAsLatest The entity of foreign property 'memberLoginAsLatest'. (NullAllowed)
+     */
+    public void setMemberLoginAsLatest(OptionalEntity<MemberLogin> memberLoginAsLatest) {
+        _memberLoginAsLatest = memberLoginAsLatest;
+    }
+
     /** member_security by MEMBER_ID, named 'memberSecurityAsOne'. */
     protected OptionalEntity<MemberSecurity> _memberSecurityAsOne;
 
@@ -398,6 +421,8 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
         { sb.append(li).append(xbRDS(_memberStatus, "memberStatus")); }
         if (_memberAddressAsValid != null && _memberAddressAsValid.isPresent())
         { sb.append(li).append(xbRDS(_memberAddressAsValid, "memberAddressAsValid")); }
+        if (_memberLoginAsLatest != null && _memberLoginAsLatest.isPresent())
+        { sb.append(li).append(xbRDS(_memberLoginAsLatest, "memberLoginAsLatest")); }
         if (_memberSecurityAsOne != null && _memberSecurityAsOne.isPresent())
         { sb.append(li).append(xbRDS(_memberSecurityAsOne, "memberSecurityAsOne")); }
         if (_memberServiceAsOne != null && _memberServiceAsOne.isPresent())
@@ -444,6 +469,8 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
         { sb.append(dm).append("memberStatus"); }
         if (_memberAddressAsValid != null && _memberAddressAsValid.isPresent())
         { sb.append(dm).append("memberAddressAsValid"); }
+        if (_memberLoginAsLatest != null && _memberLoginAsLatest.isPresent())
+        { sb.append(dm).append("memberLoginAsLatest"); }
         if (_memberSecurityAsOne != null && _memberSecurityAsOne.isPresent())
         { sb.append(dm).append("memberSecurityAsOne"); }
         if (_memberServiceAsOne != null && _memberServiceAsOne.isPresent())

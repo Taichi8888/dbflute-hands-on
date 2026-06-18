@@ -302,6 +302,33 @@ public class BsMemberCB extends AbstractConditionBean {
         return _nssMemberAddressAsValid;
     }
 
+    protected MemberLoginNss _nssMemberLoginAsLatest;
+    public MemberLoginNss xdfgetNssMemberLoginAsLatest() {
+        if (_nssMemberLoginAsLatest == null) { _nssMemberLoginAsLatest = new MemberLoginNss(null); }
+        return _nssMemberLoginAsLatest;
+    }
+    /**
+     * Set up relation columns to select clause. <br>
+     * member_login by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
+     * 最終ログイン
+     * <pre>
+     * <span style="color: #0000C0">memberBhv</span>.selectEntity(<span style="color: #553000">cb</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
+     *     <span style="color: #553000">cb</span>.<span style="color: #CC4747">setupSelect_MemberLoginAsLatest()</span>; <span style="color: #3F7E5E">// ...().with[nested-relation]()</span>
+     *     <span style="color: #553000">cb</span>.query().set...
+     * }).alwaysPresent(<span style="color: #553000">member</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
+     *     ... = <span style="color: #553000">member</span>.<span style="color: #CC4747">getMemberLoginAsLatest()</span>; <span style="color: #3F7E5E">// you can get by using SetupSelect</span>
+     * });
+     * </pre>
+     * @return The set-upper of nested relation. {setupSelect...().with[nested-relation]} (NotNull)
+     */
+    public MemberLoginNss setupSelect_MemberLoginAsLatest() {
+        assertSetupSelectPurpose("memberLoginAsLatest");
+        doSetupSelect(() -> query().queryMemberLoginAsLatest());
+        if (_nssMemberLoginAsLatest == null || !_nssMemberLoginAsLatest.hasConditionQuery())
+        { _nssMemberLoginAsLatest = new MemberLoginNss(query().queryMemberLoginAsLatest()); }
+        return _nssMemberLoginAsLatest;
+    }
+
     protected MemberSecurityNss _nssMemberSecurityAsOne;
     public MemberSecurityNss xdfgetNssMemberSecurityAsOne() {
         if (_nssMemberSecurityAsOne == null) { _nssMemberSecurityAsOne = new MemberSecurityNss(null); }
@@ -312,7 +339,7 @@ public class BsMemberCB extends AbstractConditionBean {
      * member_security by MEMBER_ID, named 'memberSecurityAsOne'.
      * <pre>
      * <span style="color: #0000C0">memberBhv</span>.selectEntity(<span style="color: #553000">cb</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
-     *     <span style="color: #553000">cb</span>.<span style="color: #CC4747">setupSelect_MemberSecurityAsOne(targetDate)</span>; <span style="color: #3F7E5E">// ...().with[nested-relation]()</span>
+     *     <span style="color: #553000">cb</span>.<span style="color: #CC4747">setupSelect_MemberSecurityAsOne()</span>; <span style="color: #3F7E5E">// ...().with[nested-relation]()</span>
      *     <span style="color: #553000">cb</span>.query().set...
      * }).alwaysPresent(<span style="color: #553000">member</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
      *     ... = <span style="color: #553000">member</span>.<span style="color: #CC4747">getMemberSecurityAsOne()</span>; <span style="color: #3F7E5E">// you can get by using SetupSelect</span>
@@ -338,7 +365,7 @@ public class BsMemberCB extends AbstractConditionBean {
      * member_service by MEMBER_ID, named 'memberServiceAsOne'.
      * <pre>
      * <span style="color: #0000C0">memberBhv</span>.selectEntity(<span style="color: #553000">cb</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
-     *     <span style="color: #553000">cb</span>.<span style="color: #CC4747">setupSelect_MemberServiceAsOne(targetDate)</span>; <span style="color: #3F7E5E">// ...().with[nested-relation]()</span>
+     *     <span style="color: #553000">cb</span>.<span style="color: #CC4747">setupSelect_MemberServiceAsOne()</span>; <span style="color: #3F7E5E">// ...().with[nested-relation]()</span>
      *     <span style="color: #553000">cb</span>.query().set...
      * }).alwaysPresent(<span style="color: #553000">member</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
      *     ... = <span style="color: #553000">member</span>.<span style="color: #CC4747">getMemberServiceAsOne()</span>; <span style="color: #3F7E5E">// you can get by using SetupSelect</span>
@@ -364,7 +391,7 @@ public class BsMemberCB extends AbstractConditionBean {
      * member_withdrawal by MEMBER_ID, named 'memberWithdrawalAsOne'.
      * <pre>
      * <span style="color: #0000C0">memberBhv</span>.selectEntity(<span style="color: #553000">cb</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
-     *     <span style="color: #553000">cb</span>.<span style="color: #CC4747">setupSelect_MemberWithdrawalAsOne(targetDate)</span>; <span style="color: #3F7E5E">// ...().with[nested-relation]()</span>
+     *     <span style="color: #553000">cb</span>.<span style="color: #CC4747">setupSelect_MemberWithdrawalAsOne()</span>; <span style="color: #3F7E5E">// ...().with[nested-relation]()</span>
      *     <span style="color: #553000">cb</span>.query().set...
      * }).alwaysPresent(<span style="color: #553000">member</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
      *     ... = <span style="color: #553000">member</span>.<span style="color: #CC4747">getMemberWithdrawalAsOne()</span>; <span style="color: #3F7E5E">// you can get by using SetupSelect</span>
@@ -423,6 +450,7 @@ public class BsMemberCB extends AbstractConditionBean {
     public static class HpSpecification extends HpAbstractSpecification<MemberCQ> {
         protected MemberStatusCB.HpSpecification _memberStatus;
         protected MemberAddressCB.HpSpecification _memberAddressAsValid;
+        protected MemberLoginCB.HpSpecification _memberLoginAsLatest;
         protected MemberSecurityCB.HpSpecification _memberSecurityAsOne;
         protected MemberServiceCB.HpSpecification _memberServiceAsOne;
         protected MemberWithdrawalCB.HpSpecification _memberWithdrawalAsOne;
@@ -559,6 +587,27 @@ public class BsMemberCB extends AbstractConditionBean {
                 }
             }
             return _memberAddressAsValid;
+        }
+        /**
+         * Prepare to specify functions about relation table. <br>
+         * member_login by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
+         * 最終ログイン
+         * @return The instance for specification for relation table to specify. (NotNull)
+         */
+        public MemberLoginCB.HpSpecification specifyMemberLoginAsLatest() {
+            assertRelation("memberLoginAsLatest");
+            if (_memberLoginAsLatest == null) {
+                _memberLoginAsLatest = new MemberLoginCB.HpSpecification(_baseCB
+                    , xcreateSpQyCall(() -> _qyCall.has() && _qyCall.qy().hasConditionQueryMemberLoginAsLatest()
+                                    , () -> _qyCall.qy().queryMemberLoginAsLatest())
+                    , _purpose, _dbmetaProvider, xgetSDRFnFc());
+                if (xhasSyncQyCall()) { // inherits it
+                    _memberLoginAsLatest.xsetSyncQyCall(xcreateSpQyCall(
+                        () -> xsyncQyCall().has() && xsyncQyCall().qy().hasConditionQueryMemberLoginAsLatest()
+                      , () -> xsyncQyCall().qy().queryMemberLoginAsLatest()));
+                }
+            }
+            return _memberLoginAsLatest;
         }
         /**
          * Prepare to specify functions about relation table. <br>

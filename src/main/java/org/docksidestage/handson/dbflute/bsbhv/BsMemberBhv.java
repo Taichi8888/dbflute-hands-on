@@ -568,6 +568,14 @@ public abstract class BsMemberBhv extends AbstractBehaviorWritable<Member, Membe
     { return helpPulloutInternally(memberList, "memberAddressAsValid"); }
 
     /**
+     * Pull out the list of foreign table 'MemberLogin'.
+     * @param memberList The list of member. (NotNull, EmptyAllowed)
+     * @return The list of foreign table. (NotNull, EmptyAllowed, NotNullElement)
+     */
+    public List<MemberLogin> pulloutMemberLoginAsLatest(List<Member> memberList)
+    { return helpPulloutInternally(memberList, "memberLoginAsLatest"); }
+
+    /**
      * Pull out the list of referrer-as-one table 'MemberSecurity'.
      * @param memberList The list of member. (NotNull, EmptyAllowed)
      * @return The list of referrer-as-one table. (NotNull, EmptyAllowed, NotNullElement)

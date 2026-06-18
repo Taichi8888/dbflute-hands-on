@@ -152,6 +152,13 @@ public class LoaderOfMember {
         return _foreignMemberAddressAsValidLoader;
     }
 
+    protected LoaderOfMemberLogin _foreignMemberLoginAsLatestLoader;
+    public LoaderOfMemberLogin pulloutMemberLoginAsLatest() {
+        if (_foreignMemberLoginAsLatestLoader == null)
+        { _foreignMemberLoginAsLatestLoader = new LoaderOfMemberLogin().ready(myBhv().pulloutMemberLoginAsLatest(_selectedList), _selector); }
+        return _foreignMemberLoginAsLatestLoader;
+    }
+
     protected LoaderOfMemberSecurity _foreignMemberSecurityAsOneLoader;
     public LoaderOfMemberSecurity pulloutMemberSecurityAsOne() {
         if (_foreignMemberSecurityAsOneLoader == null)
