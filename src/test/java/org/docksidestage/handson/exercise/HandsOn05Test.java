@@ -11,6 +11,7 @@ import org.docksidestage.handson.dbflute.exbhv.MemberBhv;
 import org.docksidestage.handson.dbflute.exbhv.PurchaseBhv;
 import org.docksidestage.handson.dbflute.exentity.Member;
 import org.docksidestage.handson.dbflute.exentity.MemberAddress;
+import org.docksidestage.handson.dbflute.exentity.MemberLogin;
 import org.docksidestage.handson.dbflute.exentity.Purchase;
 import org.docksidestage.handson.unit.UnitContainerTestCase;
 
@@ -82,6 +83,25 @@ public class HandsOn05Test extends UnitContainerTestCase {
             MemberAddress memberAddress = member.getMemberAddressAsValid().orElseThrow();
             log(member.getMemberStatus().orElseThrow().getMemberStatusName(), memberAddress.getAddress());
             assertTrue(memberAddress.isRegionId千葉());
+        });
+    }
+    
+    public void test_selectMemberWithMemberStatusOfLastLogin() throws Exception {
+        // ## Arrange ##
+        
+        // ## Act ##
+        ListResultBean<Member> memberList = memberBhv.selectList(cb -> {
+            cb.setupSelect_MemberLoginAsLatest().withMemberStatus();
+            cb.query().addOrderBy_MemberId_Asc();
+        });
+
+        // ## Assert ##
+        assertHasAnyElement(memberList);
+        assertTrue(memberList.stream().anyMatch(m -> m.getMemberLoginAsLatest().isPresent()));
+        memberList.forEach(member -> {
+            member.getMemberLoginAsLatest().ifPresent(login -> {
+                log(member.getMemberName(), login.getLoginDatetime(), login.getMemberStatus().orElseThrow().getMemberStatusName());
+            });
         });
     }
 }
