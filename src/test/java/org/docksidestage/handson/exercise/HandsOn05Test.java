@@ -18,6 +18,8 @@ import org.docksidestage.handson.unit.UnitContainerTestCase;
 // #1on1: 業務的one-to-one とは？ (2026/06/02)
 // ちょこっとだけ応用編の紹介も。いずれしっかり。
 
+// #1on1: 現場の業務的one-to-oneも見てみた (2026/06/19)
+// OverRelationの例も。
 public class HandsOn05Test extends UnitContainerTestCase {
 
     @Resource
@@ -104,4 +106,19 @@ public class HandsOn05Test extends UnitContainerTestCase {
             });
         });
     }
+    
+    // #1on1: take-finally.sqlのお話 (2026/06/19)
+    // テストデータの品質を高めよう。
+    // 現場のtake-finallyも見てみた。昔のものでは今すごく効果がある。
+    // 一方で、もっと気軽に増やしていいのに。
+    // 今だったらAIでSQL書いてもらえるから、もっと簡単に追加できるはず。
+    // take-finallyの作るきっかけ話。
+    
+    // #1on1: ConditionBeanスタイルのお話 (2026/06/19)
+    // 実は意外にメジャーだった？
+    // https://www.sqlstyle.guide/ja/
+    // SQLのフォーマットの現実問題の話。
+    // よほどのこだわりがなければ、ぜひConditionBeanスタイル。
+    // それで多くのSQLのフォーマットが統一されればみやすくなる。
+    // 大文字小文字の話も。
 }
