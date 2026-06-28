@@ -43,9 +43,9 @@
     </rollingPolicy>
   </appender>
 
-  <logger name="org.dbflute" additivity="false" level="${log.level}">
-    <appender-ref ref="console"/><appender-ref ref="appfile"/><appender-ref ref="errorfile"/>
-  </logger>
+<!--  <logger name="org.dbflute" additivity="false" level="${log.level}">-->
+<!--    <appender-ref ref="console"/><appender-ref ref="appfile"/><appender-ref ref="errorfile"/>-->
+<!--  </logger>-->
   <logger name="org.lastaflute" additivity="false" level="${log.level}">
     <appender-ref ref="console"/><appender-ref ref="appfile"/><appender-ref ref="errorfile"/>
   </logger>
