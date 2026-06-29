@@ -20,7 +20,7 @@ import org.docksidestage.handson.dbflute.bsentity.dbmeta.*;
 import org.docksidestage.handson.dbflute.cbean.*;
 
 /**
- * The behavior of (会員セキュリティ情報)member_security as TABLE.
+ * The behavior of (会員セキュリティ情報)MEMBER_SECURITY as TABLE.
  * @author DBFlute(AutoGenerator)
  */
 public abstract class BsMemberSecurityBhv extends AbstractBehaviorWritable<MemberSecurity, MemberSecurityCB> {

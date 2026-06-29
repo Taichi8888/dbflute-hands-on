@@ -13,7 +13,7 @@ import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exentity.*;
 
 /**
- * The entity of (会員)member as TABLE. <br>
+ * The entity of (会員)MEMBER as TABLE. <br>
  * 会員登録時にデータが登録される。<br>
  * 基本的に物理削除はなく、退会したらステータスが退会会員になる。
  * @author DBFlute(AutoGenerator)
@@ -195,11 +195,11 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     // ===================================================================================
     //                                                                    Foreign Property
     //                                                                    ================
-    /** (会員ステータス)member_status by my MEMBER_STATUS_CODE, named 'memberStatus'. */
+    /** (会員ステータス)MEMBER_STATUS by my MEMBER_STATUS_CODE, named 'memberStatus'. */
     protected OptionalEntity<MemberStatus> _memberStatus;
 
     /**
-     * [get] (会員ステータス)member_status by my MEMBER_STATUS_CODE, named 'memberStatus'. <br>
+     * [get] (会員ステータス)MEMBER_STATUS by my MEMBER_STATUS_CODE, named 'memberStatus'. <br>
      * Optional: alwaysPresent(), ifPresent().orElse(), get(), ...
      * @return The entity of foreign property 'memberStatus'. (NotNull, EmptyAllowed: when e.g. null FK column, no setupSelect)
      */
@@ -209,18 +209,18 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [set] (会員ステータス)member_status by my MEMBER_STATUS_CODE, named 'memberStatus'.
+     * [set] (会員ステータス)MEMBER_STATUS by my MEMBER_STATUS_CODE, named 'memberStatus'.
      * @param memberStatus The entity of foreign property 'memberStatus'. (NullAllowed)
      */
     public void setMemberStatus(OptionalEntity<MemberStatus> memberStatus) {
         _memberStatus = memberStatus;
     }
 
-    /** (会員住所情報)member_address by my MEMBER_ID, named 'memberAddressAsValid'. */
+    /** (会員住所情報)MEMBER_ADDRESS by my MEMBER_ID, named 'memberAddressAsValid'. */
     protected OptionalEntity<MemberAddress> _memberAddressAsValid;
 
     /**
-     * [get] (会員住所情報)member_address by my MEMBER_ID, named 'memberAddressAsValid'. <br>
+     * [get] (会員住所情報)MEMBER_ADDRESS by my MEMBER_ID, named 'memberAddressAsValid'. <br>
      * 有効な会員住所 (現在日時を入れれば現在住所) <br>
      * Optional: alwaysPresent(), ifPresent().orElse(), get(), ...
      * @return The entity of foreign property 'memberAddressAsValid'. (NotNull, EmptyAllowed: when e.g. null FK column, no setupSelect)
@@ -231,7 +231,7 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [set] (会員住所情報)member_address by my MEMBER_ID, named 'memberAddressAsValid'. <br>
+     * [set] (会員住所情報)MEMBER_ADDRESS by my MEMBER_ID, named 'memberAddressAsValid'. <br>
      * 有効な会員住所 (現在日時を入れれば現在住所)
      * @param memberAddressAsValid The entity of foreign property 'memberAddressAsValid'. (NullAllowed)
      */
@@ -239,11 +239,11 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
         _memberAddressAsValid = memberAddressAsValid;
     }
 
-    /** (会員ログイン情報)member_login by my MEMBER_ID, named 'memberLoginAsLatest'. */
+    /** (会員ログイン情報)MEMBER_LOGIN by my MEMBER_ID, named 'memberLoginAsLatest'. */
     protected OptionalEntity<MemberLogin> _memberLoginAsLatest;
 
     /**
-     * [get] (会員ログイン情報)member_login by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
+     * [get] (会員ログイン情報)MEMBER_LOGIN by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
      * 最終ログイン <br>
      * Optional: alwaysPresent(), ifPresent().orElse(), get(), ...
      * @return The entity of foreign property 'memberLoginAsLatest'. (NotNull, EmptyAllowed: when e.g. null FK column, no setupSelect)
@@ -254,7 +254,7 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [set] (会員ログイン情報)member_login by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
+     * [set] (会員ログイン情報)MEMBER_LOGIN by my MEMBER_ID, named 'memberLoginAsLatest'. <br>
      * 最終ログイン
      * @param memberLoginAsLatest The entity of foreign property 'memberLoginAsLatest'. (NullAllowed)
      */
@@ -328,11 +328,11 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     // ===================================================================================
     //                                                                   Referrer Property
     //                                                                   =================
-    /** (会員住所情報)member_address by MEMBER_ID, named 'memberAddressList'. */
+    /** (会員住所情報)MEMBER_ADDRESS by MEMBER_ID, named 'memberAddressList'. */
     protected List<MemberAddress> _memberAddressList;
 
     /**
-     * [get] (会員住所情報)member_address by MEMBER_ID, named 'memberAddressList'.
+     * [get] (会員住所情報)MEMBER_ADDRESS by MEMBER_ID, named 'memberAddressList'.
      * @return The entity list of referrer property 'memberAddressList'. (NotNull: even if no loading, returns empty list)
      */
     public List<MemberAddress> getMemberAddressList() {
@@ -341,18 +341,18 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [set] (会員住所情報)member_address by MEMBER_ID, named 'memberAddressList'.
+     * [set] (会員住所情報)MEMBER_ADDRESS by MEMBER_ID, named 'memberAddressList'.
      * @param memberAddressList The entity list of referrer property 'memberAddressList'. (NullAllowed)
      */
     public void setMemberAddressList(List<MemberAddress> memberAddressList) {
         _memberAddressList = memberAddressList;
     }
 
-    /** (会員ログイン情報)member_login by MEMBER_ID, named 'memberLoginList'. */
+    /** (会員ログイン情報)MEMBER_LOGIN by MEMBER_ID, named 'memberLoginList'. */
     protected List<MemberLogin> _memberLoginList;
 
     /**
-     * [get] (会員ログイン情報)member_login by MEMBER_ID, named 'memberLoginList'.
+     * [get] (会員ログイン情報)MEMBER_LOGIN by MEMBER_ID, named 'memberLoginList'.
      * @return The entity list of referrer property 'memberLoginList'. (NotNull: even if no loading, returns empty list)
      */
     public List<MemberLogin> getMemberLoginList() {
@@ -361,18 +361,18 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [set] (会員ログイン情報)member_login by MEMBER_ID, named 'memberLoginList'.
+     * [set] (会員ログイン情報)MEMBER_LOGIN by MEMBER_ID, named 'memberLoginList'.
      * @param memberLoginList The entity list of referrer property 'memberLoginList'. (NullAllowed)
      */
     public void setMemberLoginList(List<MemberLogin> memberLoginList) {
         _memberLoginList = memberLoginList;
     }
 
-    /** (購入)purchase by MEMBER_ID, named 'purchaseList'. */
+    /** (購入)PURCHASE by MEMBER_ID, named 'purchaseList'. */
     protected List<Purchase> _purchaseList;
 
     /**
-     * [get] (購入)purchase by MEMBER_ID, named 'purchaseList'.
+     * [get] (購入)PURCHASE by MEMBER_ID, named 'purchaseList'.
      * @return The entity list of referrer property 'purchaseList'. (NotNull: even if no loading, returns empty list)
      */
     public List<Purchase> getPurchaseList() {
@@ -381,7 +381,7 @@ public abstract class BsMember extends AbstractEntity implements DomainEntity {
     }
 
     /**
-     * [set] (購入)purchase by MEMBER_ID, named 'purchaseList'.
+     * [set] (購入)PURCHASE by MEMBER_ID, named 'purchaseList'.
      * @param purchaseList The entity list of referrer property 'purchaseList'. (NullAllowed)
      */
     public void setPurchaseList(List<Purchase> purchaseList) {

@@ -13,7 +13,7 @@ import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exentity.*;
 
 /**
- * The entity of (購入支払)purchase_payment as TABLE. <br>
+ * The entity of (購入支払)PURCHASE_PAYMENT as TABLE. <br>
  * 購入に対する支払。<br>
  * 分割払いもできるのでmanyとなり、会員からの孫テーブルのテストができてうれしい。
  * @author DBFlute(AutoGenerator)
@@ -199,11 +199,11 @@ public abstract class BsPurchasePayment extends AbstractEntity implements Domain
     // ===================================================================================
     //                                                                    Foreign Property
     //                                                                    ================
-    /** (購入)purchase by my PURCHASE_ID, named 'purchase'. */
+    /** (購入)PURCHASE by my PURCHASE_ID, named 'purchase'. */
     protected OptionalEntity<Purchase> _purchase;
 
     /**
-     * [get] (購入)purchase by my PURCHASE_ID, named 'purchase'. <br>
+     * [get] (購入)PURCHASE by my PURCHASE_ID, named 'purchase'. <br>
      * Optional: alwaysPresent(), ifPresent().orElse(), get(), ...
      * @return The entity of foreign property 'purchase'. (NotNull, EmptyAllowed: when e.g. null FK column, no setupSelect)
      */
@@ -213,7 +213,7 @@ public abstract class BsPurchasePayment extends AbstractEntity implements Domain
     }
 
     /**
-     * [set] (購入)purchase by my PURCHASE_ID, named 'purchase'.
+     * [set] (購入)PURCHASE by my PURCHASE_ID, named 'purchase'.
      * @param purchase The entity of foreign property 'purchase'. (NullAllowed)
      */
     public void setPurchase(OptionalEntity<Purchase> purchase) {

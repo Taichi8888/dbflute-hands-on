@@ -70,9 +70,9 @@ public class ServiceRankDbm extends AbstractDBMeta {
     //                                                                          Table Info
     //                                                                          ==========
     protected final String _tableDbName = "service_rank";
-    protected final String _tableDispName = "service_rank";
+    protected final String _tableDispName = "SERVICE_RANK";
     protected final String _tablePropertyName = "serviceRank";
-    protected final TableSqlName _tableSqlName = new TableSqlName("service_rank", _tableDbName);
+    protected final TableSqlName _tableSqlName = new TableSqlName("SERVICE_RANK", _tableDbName);
     { _tableSqlName.xacceptFilter(DBFluteConfig.getInstance().getTableSqlNameFilter()); }
     public String getTableDbName() { return _tableDbName; }
     public String getTableDispName() { return _tableDispName; }
@@ -163,7 +163,7 @@ public class ServiceRankDbm extends AbstractDBMeta {
     //                                     Referrer Property
     //                                     -----------------
     /**
-     * (会員サービス)member_service by SERVICE_RANK_CODE, named 'memberServiceList'.
+     * (会員サービス)MEMBER_SERVICE by SERVICE_RANK_CODE, named 'memberServiceList'.
      * @return The information object of referrer property. (NotNull)
      */
     public ReferrerInfo referrerMemberServiceList() {

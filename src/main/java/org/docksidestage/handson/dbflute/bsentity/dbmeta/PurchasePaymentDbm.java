@@ -79,9 +79,9 @@ public class PurchasePaymentDbm extends AbstractDBMeta {
     //                                                                          Table Info
     //                                                                          ==========
     protected final String _tableDbName = "purchase_payment";
-    protected final String _tableDispName = "purchase_payment";
+    protected final String _tableDispName = "PURCHASE_PAYMENT";
     protected final String _tablePropertyName = "purchasePayment";
-    protected final TableSqlName _tableSqlName = new TableSqlName("purchase_payment", _tableDbName);
+    protected final TableSqlName _tableSqlName = new TableSqlName("PURCHASE_PAYMENT", _tableDbName);
     { _tableSqlName.xacceptFilter(DBFluteConfig.getInstance().getTableSqlNameFilter()); }
     public String getTableDbName() { return _tableDbName; }
     public String getTableDispName() { return _tableDispName; }
@@ -184,7 +184,7 @@ public class PurchasePaymentDbm extends AbstractDBMeta {
     //                                      Foreign Property
     //                                      ----------------
     /**
-     * (購入)purchase by my PURCHASE_ID, named 'purchase'.
+     * (購入)PURCHASE by my PURCHASE_ID, named 'purchase'.
      * @return The information object of foreign property. (NotNull)
      */
     public ForeignInfo foreignPurchase() {

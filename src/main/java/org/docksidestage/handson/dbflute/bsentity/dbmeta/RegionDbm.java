@@ -59,9 +59,9 @@ public class RegionDbm extends AbstractDBMeta {
     //                                                                          Table Info
     //                                                                          ==========
     protected final String _tableDbName = "region";
-    protected final String _tableDispName = "region";
+    protected final String _tableDispName = "REGION";
     protected final String _tablePropertyName = "region";
-    protected final TableSqlName _tableSqlName = new TableSqlName("region", _tableDbName);
+    protected final TableSqlName _tableSqlName = new TableSqlName("REGION", _tableDbName);
     { _tableSqlName.xacceptFilter(DBFluteConfig.getInstance().getTableSqlNameFilter()); }
     public String getTableDbName() { return _tableDbName; }
     public String getTableDispName() { return _tableDispName; }
@@ -119,7 +119,7 @@ public class RegionDbm extends AbstractDBMeta {
     //                                     Referrer Property
     //                                     -----------------
     /**
-     * (会員住所情報)member_address by REGION_ID, named 'memberAddressList'.
+     * (会員住所情報)MEMBER_ADDRESS by REGION_ID, named 'memberAddressList'.
      * @return The information object of referrer property. (NotNull)
      */
     public ReferrerInfo referrerMemberAddressList() {

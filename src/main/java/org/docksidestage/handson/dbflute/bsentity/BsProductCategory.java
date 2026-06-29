@@ -13,7 +13,7 @@ import org.docksidestage.handson.dbflute.allcommon.CDef;
 import org.docksidestage.handson.dbflute.exentity.*;
 
 /**
- * The entity of (商品カテゴリ)product_category as TABLE. <br>
+ * The entity of (商品カテゴリ)PRODUCT_CATEGORY as TABLE. <br>
  * 商品のカテゴリを表現するマスタ。<br>
  * 自己参照の階層になっている。
  * @author DBFlute(AutoGenerator)
@@ -304,11 +304,11 @@ public abstract class BsProductCategory extends AbstractEntity implements Domain
     // ===================================================================================
     //                                                                    Foreign Property
     //                                                                    ================
-    /** (商品カテゴリ)product_category by my PARENT_CATEGORY_CODE, named 'productCategorySelf'. */
+    /** (商品カテゴリ)PRODUCT_CATEGORY by my PARENT_CATEGORY_CODE, named 'productCategorySelf'. */
     protected OptionalEntity<ProductCategory> _productCategorySelf;
 
     /**
-     * [get] (商品カテゴリ)product_category by my PARENT_CATEGORY_CODE, named 'productCategorySelf'. <br>
+     * [get] (商品カテゴリ)PRODUCT_CATEGORY by my PARENT_CATEGORY_CODE, named 'productCategorySelf'. <br>
      * Optional: alwaysPresent(), ifPresent().orElse(), get(), ...
      * @return The entity of foreign property 'productCategorySelf'. (NotNull, EmptyAllowed: when e.g. null FK column, no setupSelect)
      */
@@ -318,7 +318,7 @@ public abstract class BsProductCategory extends AbstractEntity implements Domain
     }
 
     /**
-     * [set] (商品カテゴリ)product_category by my PARENT_CATEGORY_CODE, named 'productCategorySelf'.
+     * [set] (商品カテゴリ)PRODUCT_CATEGORY by my PARENT_CATEGORY_CODE, named 'productCategorySelf'.
      * @param productCategorySelf The entity of foreign property 'productCategorySelf'. (NullAllowed)
      */
     public void setProductCategorySelf(OptionalEntity<ProductCategory> productCategorySelf) {
@@ -328,11 +328,11 @@ public abstract class BsProductCategory extends AbstractEntity implements Domain
     // ===================================================================================
     //                                                                   Referrer Property
     //                                                                   =================
-    /** (商品)product by PRODUCT_CATEGORY_CODE, named 'productList'. */
+    /** (商品)PRODUCT by PRODUCT_CATEGORY_CODE, named 'productList'. */
     protected List<Product> _productList;
 
     /**
-     * [get] (商品)product by PRODUCT_CATEGORY_CODE, named 'productList'.
+     * [get] (商品)PRODUCT by PRODUCT_CATEGORY_CODE, named 'productList'.
      * @return The entity list of referrer property 'productList'. (NotNull: even if no loading, returns empty list)
      */
     public List<Product> getProductList() {
@@ -341,18 +341,18 @@ public abstract class BsProductCategory extends AbstractEntity implements Domain
     }
 
     /**
-     * [set] (商品)product by PRODUCT_CATEGORY_CODE, named 'productList'.
+     * [set] (商品)PRODUCT by PRODUCT_CATEGORY_CODE, named 'productList'.
      * @param productList The entity list of referrer property 'productList'. (NullAllowed)
      */
     public void setProductList(List<Product> productList) {
         _productList = productList;
     }
 
-    /** (商品カテゴリ)product_category by PARENT_CATEGORY_CODE, named 'productCategorySelfList'. */
+    /** (商品カテゴリ)PRODUCT_CATEGORY by PARENT_CATEGORY_CODE, named 'productCategorySelfList'. */
     protected List<ProductCategory> _productCategorySelfList;
 
     /**
-     * [get] (商品カテゴリ)product_category by PARENT_CATEGORY_CODE, named 'productCategorySelfList'.
+     * [get] (商品カテゴリ)PRODUCT_CATEGORY by PARENT_CATEGORY_CODE, named 'productCategorySelfList'.
      * @return The entity list of referrer property 'productCategorySelfList'. (NotNull: even if no loading, returns empty list)
      */
     public List<ProductCategory> getProductCategorySelfList() {
@@ -361,7 +361,7 @@ public abstract class BsProductCategory extends AbstractEntity implements Domain
     }
 
     /**
-     * [set] (商品カテゴリ)product_category by PARENT_CATEGORY_CODE, named 'productCategorySelfList'.
+     * [set] (商品カテゴリ)PRODUCT_CATEGORY by PARENT_CATEGORY_CODE, named 'productCategorySelfList'.
      * @param productCategorySelfList The entity list of referrer property 'productCategorySelfList'. (NullAllowed)
      */
     public void setProductCategorySelfList(List<ProductCategory> productCategorySelfList) {

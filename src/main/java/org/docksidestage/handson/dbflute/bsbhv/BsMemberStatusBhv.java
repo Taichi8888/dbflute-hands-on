@@ -21,7 +21,7 @@ import org.docksidestage.handson.dbflute.bsentity.dbmeta.*;
 import org.docksidestage.handson.dbflute.cbean.*;
 
 /**
- * The behavior of (会員ステータス)member_status as TABLE.
+ * The behavior of (会員ステータス)MEMBER_STATUS as TABLE.
  * @author DBFlute(AutoGenerator)
  */
 public abstract class BsMemberStatusBhv extends AbstractBehaviorWritable<MemberStatus, MemberStatusCB> {
@@ -359,7 +359,7 @@ public abstract class BsMemberStatusBhv extends AbstractBehaviorWritable<MemberS
 
     /**
      * Load referrer of memberList by the set-upper of referrer. <br>
-     * (会員)member by MEMBER_STATUS_CODE, named 'memberList'.
+     * (会員)MEMBER by MEMBER_STATUS_CODE, named 'memberList'.
      * <pre>
      * <span style="color: #0000C0">memberStatusBhv</span>.<span style="color: #CC4747">loadMember</span>(<span style="color: #553000">memberStatusList</span>, <span style="color: #553000">memberCB</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
      *     <span style="color: #553000">memberCB</span>.setupSelect...
@@ -390,7 +390,7 @@ public abstract class BsMemberStatusBhv extends AbstractBehaviorWritable<MemberS
 
     /**
      * Load referrer of memberList by the set-upper of referrer. <br>
-     * (会員)member by MEMBER_STATUS_CODE, named 'memberList'.
+     * (会員)MEMBER by MEMBER_STATUS_CODE, named 'memberList'.
      * <pre>
      * <span style="color: #0000C0">memberStatusBhv</span>.<span style="color: #CC4747">loadMember</span>(<span style="color: #553000">memberStatus</span>, <span style="color: #553000">memberCB</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
      *     <span style="color: #553000">memberCB</span>.setupSelect...
@@ -423,7 +423,7 @@ public abstract class BsMemberStatusBhv extends AbstractBehaviorWritable<MemberS
 
     /**
      * Load referrer of memberLoginList by the set-upper of referrer. <br>
-     * (会員ログイン情報)member_login by LOGIN_MEMBER_STATUS_CODE, named 'memberLoginList'.
+     * (会員ログイン情報)MEMBER_LOGIN by LOGIN_MEMBER_STATUS_CODE, named 'memberLoginList'.
      * <pre>
      * <span style="color: #0000C0">memberStatusBhv</span>.<span style="color: #CC4747">loadMemberLogin</span>(<span style="color: #553000">memberStatusList</span>, <span style="color: #553000">loginCB</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
      *     <span style="color: #553000">loginCB</span>.setupSelect...
@@ -454,7 +454,7 @@ public abstract class BsMemberStatusBhv extends AbstractBehaviorWritable<MemberS
 
     /**
      * Load referrer of memberLoginList by the set-upper of referrer. <br>
-     * (会員ログイン情報)member_login by LOGIN_MEMBER_STATUS_CODE, named 'memberLoginList'.
+     * (会員ログイン情報)MEMBER_LOGIN by LOGIN_MEMBER_STATUS_CODE, named 'memberLoginList'.
      * <pre>
      * <span style="color: #0000C0">memberStatusBhv</span>.<span style="color: #CC4747">loadMemberLogin</span>(<span style="color: #553000">memberStatus</span>, <span style="color: #553000">loginCB</span> <span style="color: #90226C; font-weight: bold"><span style="font-size: 120%">-</span>&gt;</span> {
      *     <span style="color: #553000">loginCB</span>.setupSelect...
