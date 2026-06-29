@@ -67,14 +67,15 @@ map:{
         ; themeList = list:{}
     }
     ; tableMap = map:{
-        ; themeList = list:{}
-        ; statementList = list:{
-        }
+        ; themeList = list:{ hasPK }
+        ; statementList = list:{}
     }
     ; columnMap = map:{
         ; themeList = list:{}
         ; statementList = list:{
             ; if columnName is suffix:_FLG then notNull
+            ; if columnName is suffix:_FLAG then bad
+            ; if columnName is suffix:_ID then notNull
         }
     }
 }

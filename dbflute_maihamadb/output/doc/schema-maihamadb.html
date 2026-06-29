@@ -3660,12 +3660,14 @@ pre.spolicyviodisp {
    themeList: []
    statementList:
  tableMap:
-   themeList: []
+   themeList: [hasPK]
    statementList:
  columnMap:
    themeList: []
    statementList:
     {if:{columnName is suffix:_FLG}} {then notNull}
+    {if:{columnName is suffix:_FLAG}} {then bad}
+    {if:{columnName is suffix:_ID}} {then notNull}
 </pre>
 
 <h2 id="thanks">Thanks</h2>
