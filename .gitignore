@@ -26,6 +26,7 @@
 
 # DBFlute
 /dbflute-intro.*
+/mydbflute/dbflute-*/
 /mydbflute/intro_resources
 
 # application
