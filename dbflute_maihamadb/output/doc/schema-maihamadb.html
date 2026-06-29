@@ -4318,6 +4318,106 @@ function StoreClient() {
 	// setup from dbflute if decomment pickup exists
 	this.embeddedPickup = {
 		'tables': [
+			{
+				'tableName': 'purchase_payment'
+				, 'mappings' : [
+				]
+				, 'properties': [
+				]
+				, 'columns': [
+					 {
+						'columnName': 'PAYMENT_AMOUNT'
+						, 'mappings' : [
+						]
+						, 'properties': [
+								 {
+								'decomment': 'shalias:{支払金額}<br>支払った金額。<br>小数なのは外貨支払いも可能であるため。'
+								, 'databaseComment': '支払った金額。さて、小数点なのはなぜでしょう？'
+								, 'commentVersion': 0
+								, 'authors': ['taichi.hasegawa']
+								, 'pieceCode': 'e8ca3b6b'
+								, 'pieceDatatime': '2026-06-30T02:59:59.251'
+								, 'previousPieces': []
+							}
+						]
+					}
+				]
+			}
+			, {
+				'tableName': 'member'
+				, 'mappings' : [
+				]
+				, 'properties': [
+				]
+				, 'columns': [
+					 {
+						'columnName': 'MEMBER_NAME'
+						, 'mappings' : [
+						]
+						, 'properties': [
+								 {
+								'decomment': 'shalias:{会員名称}<br>会員のフルネームの名称。160文字まで入るよ。'
+								, 'databaseComment': '会員のフルネームの名称。'
+								, 'commentVersion': 0
+								, 'authors': ['taichi.hasegawa']
+								, 'pieceCode': 'd70a1cfb'
+								, 'pieceDatatime': '2026-06-30T02:48:01.064'
+								, 'previousPieces': ['46a518e6']
+							}
+						]
+					}
+				]
+			}
+			, {
+				'tableName': 'member_address'
+				, 'mappings' : [
+				]
+				, 'properties': [
+				]
+				, 'columns': [
+					 {
+						'columnName': 'VALID_END_DATE'
+						, 'mappings' : [
+						]
+						, 'properties': [
+								 {
+								'decomment': 'shalias:{有効終了日}<br>有効期間の終了日。<br>次の有効開始日の一日前の値が格納される。<br>ただし、次の有効期間がない場合は 9999/12/31 となり、その住所が現在有効であることを示す。'
+								, 'databaseComment': '有効期間の終了日。<br>次の有効開始日の一日前の値が格納される。<br>ただし、次の有効期間がない場合は&nbsp;9999/12/31&nbsp;となる。'
+								, 'commentVersion': 0
+								, 'authors': ['taichi.hasegawa']
+								, 'pieceCode': '3c19eb11'
+								, 'pieceDatatime': '2026-06-30T02:56:56.243'
+								, 'previousPieces': []
+							}
+						]
+					}
+				]
+			}
+			, {
+				'tableName': 'member_service'
+				, 'mappings' : [
+				]
+				, 'properties': [
+				]
+				, 'columns': [
+					 {
+						'columnName': 'AKIRAKANI_OKASHII_KARAMU_MEI'
+						, 'mappings' : [
+						]
+						, 'properties': [
+								 {
+								'decomment': 'shalias:{サービスポイント数}<br>会員が現在利用できるサービスポイントの数。<br>基本的に、購入時には増えてポイントを使ったら減る。<br>ハンズオンの演習用に、明らかにおかしいカラム名になっている。'
+								, 'databaseComment': '会員が現在利用できるサービスポイントの数。<br>基本的に、購入時には増えてポイントを使ったら減る。'
+								, 'commentVersion': 0
+								, 'authors': ['taichi.hasegawa']
+								, 'pieceCode': '8dc793e5'
+								, 'pieceDatatime': '2026-06-30T02:58:00.798'
+								, 'previousPieces': []
+							}
+						]
+					}
+				]
+			}
 		]
 	}
 

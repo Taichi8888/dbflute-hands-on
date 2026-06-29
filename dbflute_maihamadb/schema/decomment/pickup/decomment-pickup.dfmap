@@ -1,0 +1,126 @@
+map:{
+    ; formatVersion = 1.1
+    ; pickupDatetime = 2026-06-30T03:21:29.165
+    ; decoMap = map:{
+        ; tableList = list:{
+            ; map:{
+                ; tableName = purchase_payment
+                ; mappingList = list:{}
+                ; propertyList = list:{}
+                ; columnList = list:{
+                    ; map:{
+                        ; columnName = PAYMENT_AMOUNT
+                        ; mappingList = list:{}
+                        ; propertyList = list:{
+                            ; map:{
+                                ; decomment = shalias:\{支払金額\}
+支払った金額。
+小数なのは外貨支払いも可能であるため。
+                                ; databaseComment = 支払った金額。さて、小数点なのはなぜでしょう？
+                                ; commentVersion = 0
+                                ; authorList = list:{
+                                    ; taichi.hasegawa
+                                }
+                                ; pieceCode = e8ca3b6b
+                                ; pieceOwner = taichi.hasegawa
+                                ; pieceGitBranch = master
+                                ; pieceDatetime = 2026-06-30T02:59:59.251
+                                ; previousPieceList = list:{}
+                            }
+                        }
+                    }
+                }
+            }
+            ; map:{
+                ; tableName = member
+                ; mappingList = list:{}
+                ; propertyList = list:{}
+                ; columnList = list:{
+                    ; map:{
+                        ; columnName = MEMBER_NAME
+                        ; mappingList = list:{}
+                        ; propertyList = list:{
+                            ; map:{
+                                ; decomment = shalias:\{会員名称\}
+会員のフルネームの名称。160文字まで入るよ。
+                                ; databaseComment = 会員のフルネームの名称。
+                                ; commentVersion = 0
+                                ; authorList = list:{
+                                    ; taichi.hasegawa
+                                }
+                                ; pieceCode = d70a1cfb
+                                ; pieceOwner = taichi.hasegawa
+                                ; pieceGitBranch = master
+                                ; pieceDatetime = 2026-06-30T02:48:01.064
+                                ; previousPieceList = list:{
+                                    ; 46a518e6
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            ; map:{
+                ; tableName = member_address
+                ; mappingList = list:{}
+                ; propertyList = list:{}
+                ; columnList = list:{
+                    ; map:{
+                        ; columnName = VALID_END_DATE
+                        ; mappingList = list:{}
+                        ; propertyList = list:{
+                            ; map:{
+                                ; decomment = shalias:\{有効終了日\}
+有効期間の終了日。
+次の有効開始日の一日前の値が格納される。
+ただし、次の有効期間がない場合は 9999/12/31 となり、その住所が現在有効であることを示す。
+                                ; databaseComment = 有効期間の終了日。
+次の有効開始日の一日前の値が格納される。
+ただし、次の有効期間がない場合は&nbsp\;9999/12/31&nbsp\;となる。
+                                ; commentVersion = 0
+                                ; authorList = list:{
+                                    ; taichi.hasegawa
+                                }
+                                ; pieceCode = 3c19eb11
+                                ; pieceOwner = taichi.hasegawa
+                                ; pieceGitBranch = master
+                                ; pieceDatetime = 2026-06-30T02:56:56.243
+                                ; previousPieceList = list:{}
+                            }
+                        }
+                    }
+                }
+            }
+            ; map:{
+                ; tableName = member_service
+                ; mappingList = list:{}
+                ; propertyList = list:{}
+                ; columnList = list:{
+                    ; map:{
+                        ; columnName = AKIRAKANI_OKASHII_KARAMU_MEI
+                        ; mappingList = list:{}
+                        ; propertyList = list:{
+                            ; map:{
+                                ; decomment = shalias:\{サービスポイント数\}
+会員が現在利用できるサービスポイントの数。
+基本的に、購入時には増えてポイントを使ったら減る。
+ハンズオンの演習用に、明らかにおかしいカラム名になっている。
+                                ; databaseComment = 会員が現在利用できるサービスポイントの数。
+基本的に、購入時には増えてポイントを使ったら減る。
+                                ; commentVersion = 0
+                                ; authorList = list:{
+                                    ; taichi.hasegawa
+                                }
+                                ; pieceCode = 8dc793e5
+                                ; pieceOwner = taichi.hasegawa
+                                ; pieceGitBranch = master
+                                ; pieceDatetime = 2026-06-30T02:58:00.798
+                                ; previousPieceList = list:{}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
