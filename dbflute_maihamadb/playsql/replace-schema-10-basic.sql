@@ -112,7 +112,7 @@ create table PURCHASE(
     PURCHASE_PRICE INTEGER NOT NULL COMMENT '購入価格: 購入によって実際に会員が支払った（支払う予定の）価格。
 基本は商品の定価に購入数量を掛けたものになるが、
 ポイント利用や割引があったりと必ずしもそうはならない。',
-    PAYMENT_COMPLETE_FLG INTEGER NOT NULL COMMENT '支払完了フラグ: この購入に関しての支払いが完了しているか否か。',
+    PAYMENT_COMPLETE_FLG INTEGER COMMENT '支払完了フラグ: この購入に関しての支払いが完了しているか否か。',
     REGISTER_DATETIME DATETIME NOT NULL,
     REGISTER_USER VARCHAR(200) NOT NULL,
     UPDATE_DATETIME DATETIME NOT NULL,
