@@ -659,32 +659,6 @@ pre.spolicyviodisp {
 	<button id="column-mapping-submit-button">Mapping</button>
 </div>
 
-<h2 id="schemapolicyvio">SchemaPolicy Violation</h2>
-<pre class="spolicyviodisp">
-Look! Read the message below.
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-The schema policy has been violated.
-
-[Advice]
-Make sure your violating schema (ERD and DDL).
-You can see violations on this message or SchemaHTML.
-And after that, execute renewal (or regenerate) again.
-(tips: The schema policy is on schemaPolicyMap.dfprop)
-
-[Violation]
-column.statement: if columnName is suffix:_FLG then dbType is INTEGER
- |-but INT: (会員ログイン情報.モバイルログインフラグ)MEMBER_LOGIN.MOBILE_LOGIN_FLG INT(10) (NotNull) // モバイル機器からのロ...
- |-but INT: (購入.支払完了フラグ)PURCHASE.PAYMENT_COMPLETE_FLG INT(10) (NullAllowed) // この購入に関しての支...
- +-but INT: (サービスランク.新規受け入れ可能フラグ)SERVICE_RANK.NEW_ACCEPTABLE_FLG INT(10) (NotNull) // このランクへの新規受...
-
-column.statement: if columnName is suffix:_FLG then notNull
- +-The column should be not-null: (購入.支払完了フラグ)PURCHASE.PAYMENT_COMPLETE_FLG INT(10) (NullAllowed) // この購入に関しての支...
-
-table.theme: identityIfPureIDPK
- +-The primary key should be identity: (地域.地域ID)REGION.REGION_ID INT(10) (NotNull)
-* * * * * * * * * */
-</pre>
-
 
 
 <h2 title="mainSchema=maihamadb, tableCount=15, columnCountAll=104">Table List</h2>
@@ -2747,7 +2721,7 @@ table.theme: identityIfPureIDPK
 		<td class="flgcell"> &nbsp;</td>
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">&nbsp;</td>
-		<td class="flgcell"> &nbsp;</td>
+		<td class="flgcell">*</td>
 		<td class="aliascell">支払完了フラグ</td>
 		<td class=" columnnamecell" id="purchase_payment_complete_flg">PAYMENT_COMPLETE_FLG</td>
 		<td class="typecell">INT</td>
@@ -3683,19 +3657,15 @@ table.theme: identityIfPureIDPK
  columnExceptMap: {}
  isMainSchemaOnly: false
  wholeMap:
-   themeList: [uniqueTableAlias, sameColumnAliasIfSameColumnName]
+   themeList: []
    statementList:
  tableMap:
-   themeList: [hasPK, upperCaseBasis, identityIfPureIDPK]
+   themeList: []
    statementList:
-    {if:{tableName is $$ALL$$}} {then:{fkName is prefix:FK_$$table$$}}
  columnMap:
-   themeList: [upperCaseBasis]
+   themeList: []
    statementList:
-    {if:{columnName is suffix:_FLAG}} {then bad}
     {if:{columnName is suffix:_FLG}} {then notNull}
-    {if:{columnName is suffix:_FLG}} {then:{dbType is INTEGER}}
-    {if:{columnName is suffix:_FLG}} {then classification}
 </pre>
 
 <h2 id="thanks">Thanks</h2>

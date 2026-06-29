@@ -376,7 +376,8 @@
             dbType="INT" javaType="Integer" name="PURCHASE_PRICE"
             required="true" size="10" type="INTEGER"/>
         <column comment="支払完了フラグ: この購入に関しての支払いが完了しているか否か。" dbType="INT"
-            javaType="Integer" name="PAYMENT_COMPLETE_FLG" size="10" type="INTEGER"/>
+            javaType="Integer" name="PAYMENT_COMPLETE_FLG"
+            required="true" size="10" type="INTEGER"/>
         <column comment="" dbType="DATETIME"
             javaType="java.time.LocalDateTime" name="REGISTER_DATETIME"
             required="true" size="19" type="TIMESTAMP"/>
